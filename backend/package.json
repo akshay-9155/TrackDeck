@@ -1,0 +1,43 @@
+{
+  "name": "trackdeck",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A full-stack web application to manage and track online product purchases, reviews, and refund statuses. Users can log orders, submit reviews, track refund progress, and receive notifications — all in one organized dashboard. Built using the MERN stack for efficient tracking, automation, and user-friendly management of order workflows.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules server.js"
+  },
+  "keywords": [
+    "order-tracker",
+    "refund-tracker",
+    "review-manager",
+    "purchase-tracking",
+    "ecommerce-tracker",
+    "MERN",
+    "MongoDB",
+    "Express",
+    "React",
+    "Node.js",
+    "fullstack-app",
+    "online-shopping",
+    "dashboard",
+    "order-management",
+    "returns-management",
+    "product-review",
+    "track-orders",
+    "refund-status",
+    "order-status"
+  ],
+  "author": "Akshay Anand",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.3",
+    "nodemon": "^3.1.10"
+  }
+}
