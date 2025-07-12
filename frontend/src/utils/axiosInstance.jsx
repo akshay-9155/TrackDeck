@@ -1,12 +1,11 @@
 import axios from "axios";
 import store from "../store";
 import { logoutUser, setUser } from "../features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 
+const dispatch = useDispatch();
 // In-memory access token
-let accessToken = null;
-export const setAccessToken = (token) => {
-  accessToken = token;
-};
+const accessToken = useSelector((state) => state?.auth?.user?.accessToken) || null;
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1",
@@ -51,13 +50,12 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const res = await axiosInstance.post("/auth/refreshAccessToken"); // refreshToken stored in httpOnly cookie
-        const newAccessToken = res.data?.data?.accessToken;
-        setAccessToken(newAccessToken);
-        store.dispatch(setUser(res.data?.data?.user));
+        const newAccessToken = res.data?.message?.accessToken;
+        dispatch(setAccessToken(newAccessToken));
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        store.dispatch(logoutUser());
+        dispatch(logoutUser());
         return Promise.reject(refreshError);
       }
     }
