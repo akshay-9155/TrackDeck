@@ -1,18 +1,21 @@
+// src/utils/axiosInstance.jsx
 import axios from "axios";
 import store from "../store";
 import { logoutUser, setUser } from "../features/authSlice";
-import { useDispatch, useSelector } from "react-redux";
 
-const dispatch = useDispatch();
-// In-memory access token
-const accessToken = useSelector((state) => state?.auth?.user?.accessToken) || null;
+let accessToken = null;
+
+// ✅ Setter to allow updating token from useLogin etc.
+export const setAccessToken = (token) => {
+  accessToken = token;
+};
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1",
-  withCredentials: true, // send cookies
+  withCredentials: true,
 });
 
-// Request Interceptor: Add access token
+// ✅ Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
     if (accessToken) {
@@ -23,8 +26,7 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Handle 401 & retry
-
+// ✅ Response Interceptor
 const skipRefreshRoutes = [
   "/auth/login",
   "/auth/register",
@@ -36,7 +38,6 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
     const is401 = error.response?.status === 401;
     const isRetry = originalRequest._retry;
     const isRefreshCall = originalRequest.url.includes(
@@ -49,13 +50,22 @@ axiosInstance.interceptors.response.use(
     if (is401 && !isRetry && !isRefreshCall && !isPublicRoute) {
       originalRequest._retry = true;
       try {
-        const res = await axiosInstance.post("/auth/refreshAccessToken"); // refreshToken stored in httpOnly cookie
-        const newAccessToken = res.data?.message?.accessToken;
-        dispatch(setAccessToken(newAccessToken));
+        const res = await axiosInstance.post("/auth/refreshAccessToken");
+        const newAccessToken = res.data?.data?.accessToken;
+
+        // ✅ update accessToken in memory and Redux
+        setAccessToken(newAccessToken);
+        store.dispatch(
+          setUser({
+            ...store.getState().auth.user,
+            accessToken: newAccessToken,
+          })
+        );
+
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        dispatch(logoutUser());
+        store.dispatch(logoutUser());
         return Promise.reject(refreshError);
       }
     }

@@ -1,4 +1,7 @@
 import { useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
+import useLogout from "../hooks/useLogout.js"
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 const RequireAuth = ({ allowedRoles }) => {
   const { user } = useSelector((state) => state.auth);
@@ -29,3 +32,5 @@ const RequireAuth = ({ allowedRoles }) => {
     return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   return <Navigate to="/login" state={{ from: location }} replace />;
 };
+
+export default RequireAuth;

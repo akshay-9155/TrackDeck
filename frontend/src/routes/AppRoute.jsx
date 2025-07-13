@@ -1,3 +1,4 @@
+// src/routes/AppRoute.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
@@ -6,20 +7,29 @@ import Navbar from "../components/Navbar";
 import NotFound from "../pages/NotFound";
 import Footer from "../components/Footer";
 import UnderDevelopment from "../pages/UnderDevelopment";
-import RequireAuth from "./RequireAuth";
 import Unauthorized from "../pages/Unauthorized";
 import About from "../pages/About";
 import AdminDashboard from "../pages/AdminDashboard";
 import Terms from "../pages/Terms";
 import UserDashboard from "../pages/UserDashboard";
 import ScrollToTop from "../components/ScrollToTop";
+import RequireAuth from "./RequireAuth";
 
 const AppRoutes = () => {
   return (
     <Router future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
-      <ScrollToTop/>
+      <ScrollToTop />
+      {/* Fixed Navbar */}
       <Navbar />
-      <main className=" h-full w-full">
+
+      {/* Main Content */}
+      <main
+        style={{
+          flex: "1 0 auto",
+          paddingTop: "64px", // height of AppBar (default MUI AppBar height)
+          paddingBottom: "80px", // space for footer
+        }}
+      >
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
@@ -47,6 +57,8 @@ const AppRoutes = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+
+      {/* Fixed Footer */}
       <Footer />
     </Router>
   );

@@ -23,13 +23,13 @@ export const validateCreateOrder = [
         .isFloat({ min: 0 }).withMessage('Less must be a positive number'),
 
     body('orderDate')
-        .notEmpty()
+        .optional()
         .isISO8601()
         .toDate()
         .withMessage('Valid order date required'),
 
     body('orderFormDate')
-        .notEmpty()
+        .optional()
         .isISO8601()
         .toDate()
         .withMessage('Valid order form date is required'),

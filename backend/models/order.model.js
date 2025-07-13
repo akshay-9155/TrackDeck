@@ -31,7 +31,8 @@ const OrderSchema = new mongoose.Schema({
     },
     less: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     orderDate: {
         type: Date,
