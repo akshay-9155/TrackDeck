@@ -11,7 +11,7 @@ const OrderSchema = new mongoose.Schema({
     feedback: {
         type: {
             type: String,
-            enum: ['rating', 'reviewLive', 'review', 'other'],
+            enum: ['Rating', 'ReviewLive', 'Review', 'Other'],
             required: true
         }
     },
@@ -43,7 +43,7 @@ const OrderSchema = new mongoose.Schema({
         },
         condition: {
             type: String,
-            enum: ['original', 'exchange', 'semi empty', 'empty', 'other'],
+            enum: ['Original', 'Exchange', 'Semi Empty', 'Empty', 'Other'],
             required: true
         },
         price: {
@@ -55,7 +55,6 @@ const OrderSchema = new mongoose.Schema({
             type: Number,
             required: true,
             default: 0,
-            min: 0
         }
     },
 
@@ -68,7 +67,7 @@ const OrderSchema = new mongoose.Schema({
             },
             platform: {
                 type: String,
-                enum: ['telegram', 'whatsapp'],
+                enum: ['Telegram', 'Whatsapp'],
                 required: true
             }
         }, { _id: false }),

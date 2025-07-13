@@ -4,7 +4,7 @@ import { body } from 'express-validator';
 export const validateCreateOrder = [
     body('feedbackType')
         .notEmpty().withMessage('Feedback type is required')
-        .isIn(['rating', 'reviewLive', 'review', 'other'])
+        .isIn(['Rating', 'ReviewLive', 'Review', 'Other'])
         .withMessage('Invalid feedback type'),
 
     body('productOrderId').notEmpty().withMessage('Order ID is required'),
@@ -19,16 +19,16 @@ export const validateCreateOrder = [
 
     body('productCondition')
         .notEmpty()
-        .isIn(['original', 'exchange', 'semi empty', 'empty', 'other'])
+        .isIn(['Original', 'Exchange', 'Semi Empty', 'Empty', 'Other'])
         .withMessage('Invalid product condition'),
 
     body('productPrice').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
-    body('productLess').isFloat({ min: 0 }).withMessage('Less must be a positive number'),
+    body('productLess').isFloat().withMessage('Less must be a number'),
 
     body('dealerName').notEmpty().withMessage('Dealer name is required'),
     body('dealerPhoneNumber').optional().isString(),
     body('dealerTelegramId').optional().isString(),
-    body('dealerPlatform').notEmpty().isIn(['telegram', 'whatsapp']).withMessage('Invalid dealer platform'),
+    body('dealerPlatform').notEmpty().isIn(['Telegram', 'Whatsapp']).withMessage('Invalid dealer platform'),
 
     body('orderPlacedAt').optional().isISO8601().toDate(),
     body('formSubmittedAt').optional().isISO8601().toDate(),
@@ -54,10 +54,50 @@ export const validateCreateOrder = [
     body('notes').optional().isString()
 ];
 
-
-
-
 export const validateUpdateOrder = [
+    body('feedbackType')
+        .optional()
+        .isIn(['Rating', 'ReviewLive', 'Review', 'Other'])
+        .withMessage('Invalid feedback type'),
+
+    body('productPlatform')
+        .optional()
+        .isIn(['Amazon', 'Flipkart', 'Meesho', 'Other'])
+        .withMessage('Invalid product platform'),
+
+    body('productCondition')
+        .optional()
+        .isIn(['Original', 'Exchange', 'Semi Empty', 'Empty', 'Other'])
+        .withMessage('Invalid product condition'),
+
+    body('productPrice')
+        .isFloat({ min: 0 })
+        .withMessage('Price must be a positive number'),
+
+    body('productLess')
+        .isFloat()
+        .withMessage('Less must be a number'),
+
+    body('dealerInfoName')
+        .optional()
+        .isString()
+        .withMessage('Dealer name must be a string'),
+
+    body('dealerInfoPhoneNumber')
+        .optional()
+        .isMobilePhone()
+        .withMessage('Invalid dealer phone number'),
+
+    body('dealerInfoTelegramId')
+        .optional()
+        .isString()
+        .withMessage('Telegram ID must be a string'),
+
+    body('dealerPlatform')
+        .optional()
+        .isIn(['Telegram', 'Whatsapp'])
+        .withMessage('Invalid dealer platform'),
+
     body('deliveryDate')
         .optional()
         .isISO8601()
@@ -136,4 +176,5 @@ export const validateUpdateOrder = [
         .isString()
         .withMessage('Notes must be a string')
 ];
+
 

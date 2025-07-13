@@ -215,25 +215,46 @@ export const updateOrder = asyncHandler(async (req, res) => {
 
     // 🛠 Map request body to nested order structure
     const updates = {
+        'feedback.type': req.body.feedbackType,
+
+        'product.displayName': req.body.productDisplayName,
+        'product.originalName': req.body.productOriginalName,
+        'product.link': req.body.productLink,
+        'product.platform': req.body.productPlatform,
+        'product.condition': req.body.productCondition,
+        'product.price': req.body.productPrice,
+        'product.less': req.body.productLess,
+
+        'dealer.info.name': req.body.dealerInfoName,
+        'dealer.info.phoneNumber': req.body.dealerInfoPhoneNumber,
+        'dealer.info.telegramId': req.body.dealerInfoTelegramId,
+        'dealer.platform': req.body.dealerPlatform,
+
         'timeline.deliveryDate': req.body.deliveryDate,
         'timeline.isDelivered': req.body.isDelivered,
+
         'review.status': req.body.reviewStatus,
         'review.text': req.body.reviewText,
         'review.screenshot': req.body.reviewScreenshot,
+
         'rating.status': req.body.ratingStatus,
         'rating.screenshot': req.body.ratingScreenshot,
+
         'sellerFeedback.status': req.body.sellerFeedbackStatus,
         'sellerFeedback.screenshot': req.body.sellerFeedbackScreenshot,
+
         'refund.status': req.body.refundStatus,
         'refund.amount': req.body.refundAmount,
         'refund.formSubmittedAt': req.body.refundFormDate,
         'refund.receivedAt': req.body.refundReceivedDate,
         'refund.proof': req.body.refundProof,
+
         'notes': req.body.notes
     };
 
+
     for (const [path, value] of Object.entries(updates)) {
-        if (value !== undefined) {
+        if (value !== undefined && value !== "") {
             order.set(path, value);
         }
     }
