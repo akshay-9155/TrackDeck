@@ -7,60 +7,117 @@ import { validateObjectId } from '../utils/helper.js';
 import { Order } from '../models/order.model.js';
 
 export const createOrder = asyncHandler(async (req, res) => {
-    // 1️⃣ Validate inputs from express-validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         throw new ApiError(422, errors.array()[0].msg);
     }
 
     const {
-        productName,
+        feedbackType,
+        productOrderId,
+        productDisplayName,
         productOriginalName,
         productLink,
-        platform,
-        price,
-        less,
-        orderDate,
-        orderFormDate,
+        productPlatform,
+        productCondition,
+        productPrice,
+        productLess,
+        dealerName,
+        dealerPhoneNumber,
+        dealerTelegramId,
+        dealerPlatform,
+        orderPlacedAt,
+        formSubmittedAt,
         deliveryDate,
+        isDelivered,
         reviewStatus,
+        reviewText,
+        reviewScreenshot,
         ratingStatus,
-        refundFormDate
+        ratingScreenshot,
+        sellerFeedbackStatus,
+        sellerFeedbackScreenshot,
+        refundStatus,
+        refundAmount,
+        refundFormSubmittedAt,
+        refundReceivedAt,
+        refundProof,
+        notes
     } = req.body;
 
-    // 2️⃣ Create and save order
+    const existingOrder = await Order.findOne({ 'product.orderId': productOrderId });
+    if(existingOrder){
+        throw new ApiError(409, "Order with this ID already exists.");
+    }
+
     const newOrder = await Order.create({
-        user: req.user._id, // set by authenticate middleware
-        productName,
-        productOriginalName,
-        productLink,
-        platform,
-        price,
-        less,
-        orderDate,
-        orderFormDate,
-        deliveryDate,
-        reviewStatus,
-        ratingStatus,
-        refundFormDate
+        user: req.user._id,
+        feedback: {
+            type: feedbackType
+        },
+        product: {
+            orderId: productOrderId,
+            displayName: productDisplayName,
+            originalName: productOriginalName,
+            link: productLink,
+            platform: productPlatform,
+            condition: productCondition,
+            price: productPrice,
+            less: productLess
+        },
+        dealer: {
+            info: {
+                name: dealerName,
+                phoneNumber: dealerPhoneNumber,
+                telegramId: dealerTelegramId
+            },
+            platform: dealerPlatform
+        },
+        timeline: {
+            orderPlacedAt,
+            formSubmittedAt,
+            deliveryDate,
+            isDelivered
+        },
+        review: {
+            status: reviewStatus,
+            text: reviewText,
+            screenshot: reviewScreenshot
+        },
+        rating: {
+            status: ratingStatus,
+            screenshot: ratingScreenshot
+        },
+        sellerFeedback: {
+            status: sellerFeedbackStatus,
+            screenshot: sellerFeedbackScreenshot
+        },
+        refund: {
+            status: refundStatus,
+            amount: refundAmount,
+            formSubmittedAt: refundFormSubmittedAt,
+            receivedAt: refundReceivedAt,
+            proof: refundProof
+        },
+        notes
     });
 
-    // 3️⃣ Return response
     return res.status(201).json(
         new ApiResponse(201, newOrder, "Order created successfully")
     );
 });
-
 
 export const getAllOrders = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
     // ✅ Query params for filtering & pagination
     const {
+        orderId,
         platform,
         refundStatus,
         reviewStatus,
         ratingStatus,
+        sellerFeedbackStatus,
         sort = 'desc',
         page = 1,
         limit = 10,
@@ -68,26 +125,28 @@ export const getAllOrders = asyncHandler(async (req, res) => {
         endDate
     } = req.query;
 
+    // 🔍 Filter object for nested schema
     const filter = { user: userId };
 
-    // Apply filters
-    if (platform) filter.platform = platform;
-    if (refundStatus) filter.refundStatus = refundStatus;
-    if (reviewStatus) filter.reviewStatus = reviewStatus;
-    if (ratingStatus) filter.ratingStatus = ratingStatus;
+    if (orderId) filter['product.orderId'] = orderId;
+    if (platform) filter['product.platform'] = platform;
+    if (refundStatus) filter['refund.status'] = refundStatus;
+    if (reviewStatus) filter['review.status'] = reviewStatus;
+    if (ratingStatus) filter['rating.status'] = ratingStatus;
+    if (sellerFeedbackStatus) filter['sellerFeedback.status'] = sellerFeedbackStatus;
 
-    // Date range filter
+    // 📅 Date range filter (on timeline.orderPlacedAt)
     if (startDate || endDate) {
-        filter.orderDate = {};
-        if (startDate) filter.orderDate.$gte = new Date(startDate);
-        if (endDate) filter.orderDate.$lte = new Date(endDate);
+        filter['timeline.orderPlacedAt'] = {};
+        if (startDate) filter['timeline.orderPlacedAt'].$gte = new Date(startDate);
+        if (endDate) filter['timeline.orderPlacedAt'].$lte = new Date(endDate);
     }
 
     const parsedPage = Math.max(1, parseInt(page) || 1);
     const parsedLimit = Math.max(1, parseInt(limit) || 10);
     const skip = (parsedPage - 1) * parsedLimit;
 
-    // Fetch orders & total
+    // 📦 Fetch paginated data and total count
     const [orders, total] = await Promise.all([
         Order.find(filter)
             .sort({ createdAt: sort === 'asc' ? 1 : -1 })
@@ -99,15 +158,19 @@ export const getAllOrders = asyncHandler(async (req, res) => {
     const totalPages = Math.ceil(total / parsedLimit);
 
     return res.status(200).json(
-        new ApiResponse(200, {
-            orders,
-            pagination: {
-                total,
-                page: parsedPage,
-                totalPages,
-                limit: parsedLimit
-            }
-        }, "Orders fetched successfully")
+        new ApiResponse(
+            200,
+            {
+                orders,
+                pagination: {
+                    total,
+                    page: parsedPage,
+                    totalPages,
+                    limit: parsedLimit
+                }
+            },
+            "Orders fetched successfully"
+        )
     );
 });
 
@@ -136,38 +199,44 @@ export const updateOrder = asyncHandler(async (req, res) => {
     const orderId = req.params.id;
     const userId = req.user._id;
 
-    // 🔍 Validate ObjectId
     if (!validateObjectId(orderId)) {
         throw new ApiError(400, "Invalid Order ID");
     }
 
-    // ✅ Validate request body using express-validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         throw new ApiError(422, errors.array()[0].msg);
     }
 
-    // 🔐 Find the order belonging to the current user
     const order = await Order.findOne({ _id: orderId, user: userId });
     if (!order) {
         throw new ApiError(404, "Order not found or access denied");
     }
 
-    // 🔁 Update only the allowed fields
-    const updatableFields = [
-        'deliveryDate', 'isDelivered',
-        'reviewStatus', 'reviewText', 'reviewScreenshot',
-        'ratingStatus', 'ratingScreenshot',
-        'refundStatus', 'refundAmount', 'refundFormDate',
-        'refundAppliedDate', 'refundReceivedDate', 'refundProof',
-        'notes'
-    ];
+    // 🛠 Map request body to nested order structure
+    const updates = {
+        'timeline.deliveryDate': req.body.deliveryDate,
+        'timeline.isDelivered': req.body.isDelivered,
+        'review.status': req.body.reviewStatus,
+        'review.text': req.body.reviewText,
+        'review.screenshot': req.body.reviewScreenshot,
+        'rating.status': req.body.ratingStatus,
+        'rating.screenshot': req.body.ratingScreenshot,
+        'sellerFeedback.status': req.body.sellerFeedbackStatus,
+        'sellerFeedback.screenshot': req.body.sellerFeedbackScreenshot,
+        'refund.status': req.body.refundStatus,
+        'refund.amount': req.body.refundAmount,
+        'refund.formSubmittedAt': req.body.refundFormDate,
+        'refund.receivedAt': req.body.refundReceivedDate,
+        'refund.proof': req.body.refundProof,
+        'notes': req.body.notes
+    };
 
-    updatableFields.forEach(field => {
-        if (req.body[field] !== undefined) {
-            order[field] = req.body[field];
+    for (const [path, value] of Object.entries(updates)) {
+        if (value !== undefined) {
+            order.set(path, value);
         }
-    });
+    }
 
     await order.save();
 
@@ -215,22 +284,55 @@ export const getOrderSummary = asyncHandler(async (req, res) => {
         deliveredOrders,
         pendingReviews,
         pendingRatings,
-        refundApplied,
+        refundPending,
         refundReceived,
         refundSummary
     ] = await Promise.all([
+        // Total orders
         Order.countDocuments(matchCriteria),
-        Order.countDocuments({ ...matchCriteria, isDelivered: true }),
-        Order.countDocuments({ ...matchCriteria, reviewStatus: 'Pending' }),
-        Order.countDocuments({ ...matchCriteria, ratingStatus: 'Pending' }),
-        Order.countDocuments({ ...matchCriteria, refundStatus: 'Applied' }),
-        Order.countDocuments({ ...matchCriteria, refundStatus: 'Received' }),
+
+        // Delivered orders
+        Order.countDocuments({
+            ...matchCriteria,
+            'timeline.isDelivered': true
+        }),
+
+        // Pending reviews
+        Order.countDocuments({
+            ...matchCriteria,
+            'review.status': 'Pending'
+        }),
+
+        // Pending ratings
+        Order.countDocuments({
+            ...matchCriteria,
+            'rating.status': 'Pending'
+        }),
+
+        // Refunds applied (i.e. still pending)
+        Order.countDocuments({
+            ...matchCriteria,
+            'refund.status': 'Pending'
+        }),
+
+        // Refunds received
+        Order.countDocuments({
+            ...matchCriteria,
+            'refund.status': 'Received'
+        }),
+
+        // Total refund amount (received only)
         Order.aggregate([
-            { $match: { ...matchCriteria, refundStatus: 'Received' } },
+            {
+                $match: {
+                    ...matchCriteria,
+                    'refund.status': 'Received'
+                }
+            },
             {
                 $group: {
                     _id: null,
-                    totalRefundAmount: { $sum: '$refundAmount' }
+                    totalRefundAmount: { $sum: '$refund.amount' }
                 }
             }
         ])
@@ -244,7 +346,7 @@ export const getOrderSummary = asyncHandler(async (req, res) => {
             deliveredOrders,
             pendingReviews,
             pendingRatings,
-            refundApplied,
+            refundPending,
             refundReceived,
             totalRefundAmount
         }, "Order summary fetched successfully")

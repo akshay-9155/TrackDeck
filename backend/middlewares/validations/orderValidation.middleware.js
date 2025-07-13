@@ -2,60 +2,58 @@
 import { body } from 'express-validator';
 
 export const validateCreateOrder = [
-    body('productName')
-        .notEmpty().withMessage('Product name is required'),
+    body('feedbackType')
+        .notEmpty().withMessage('Feedback type is required')
+        .isIn(['rating', 'reviewLive', 'review', 'other'])
+        .withMessage('Invalid feedback type'),
 
-    body('productOriginalName')
-        .notEmpty().withMessage('Original product name is required'),
+    body('productOrderId').notEmpty().withMessage('Order ID is required'),
+    body('productDisplayName').notEmpty().withMessage('Display name is required'),
+    body('productOriginalName').notEmpty().withMessage('Original name is required'),
+    body('productLink').optional().isURL().withMessage('Invalid product link'),
 
-    body('productLink')
-        .optional()
-        .isURL().withMessage('Product link must be a valid URL'),
-
-    body('platform')
+    body('productPlatform')
+        .notEmpty()
         .isIn(['Amazon', 'Flipkart', 'Meesho', 'Other'])
-        .withMessage('Invalid platform'),
+        .withMessage('Invalid product platform'),
 
-    body('price')
-        .isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+    body('productCondition')
+        .notEmpty()
+        .isIn(['original', 'exchange', 'semi empty', 'empty', 'other'])
+        .withMessage('Invalid product condition'),
 
-    body('less')
-        .isFloat({ min: 0 }).withMessage('Less must be a positive number'),
+    body('productPrice').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+    body('productLess').isFloat({ min: 0 }).withMessage('Less must be a positive number'),
 
-    body('orderDate')
-        .optional()
-        .isISO8601()
-        .toDate()
-        .withMessage('Valid order date required'),
+    body('dealerName').notEmpty().withMessage('Dealer name is required'),
+    body('dealerPhoneNumber').optional().isString(),
+    body('dealerTelegramId').optional().isString(),
+    body('dealerPlatform').notEmpty().isIn(['telegram', 'whatsapp']).withMessage('Invalid dealer platform'),
 
-    body('orderFormDate')
-        .optional()
-        .isISO8601()
-        .toDate()
-        .withMessage('Valid order form date is required'),
+    body('orderPlacedAt').optional().isISO8601().toDate(),
+    body('formSubmittedAt').optional().isISO8601().toDate(),
+    body('deliveryDate').optional().isISO8601().toDate(),
+    body('isDelivered').optional().isBoolean(),
 
-    body('deliveryDate')
-        .optional()
-        .isISO8601()
-        .toDate()
-        .withMessage('Delivery date must be a valid date'),
+    body('reviewStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
+    body('reviewText').optional().isString(),
+    body('reviewScreenshot').optional().isURL(),
 
-    body('reviewStatus')
-        .optional()
-        .isIn(['Pending', 'Completed', 'Not Required'])
-        .withMessage('Invalid review status'),
+    body('ratingStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
+    body('ratingScreenshot').optional().isURL(),
 
-    body('ratingStatus')
-        .optional()
-        .isIn(['Pending', 'Completed', 'Not Required'])
-        .withMessage('Invalid rating status'),
+    body('sellerFeedbackStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
+    body('sellerFeedbackScreenshot').optional().isURL(),
 
-    body('refundFormDate')
-        .optional()
-        .isISO8601()
-        .toDate()
-        .withMessage('Refund form date must be a valid date')
+    body('refundStatus').optional().isIn(['Pending', 'Received', 'Rejected']),
+    body('refundAmount').optional().isFloat({ min: 0 }),
+    body('refundFormSubmittedAt').optional().isISO8601().toDate(),
+    body('refundReceivedAt').optional().isISO8601().toDate(),
+    body('refundProof').optional().isURL(),
+
+    body('notes').optional().isString()
 ];
+
 
 
 
@@ -96,9 +94,19 @@ export const validateUpdateOrder = [
         .isURL()
         .withMessage('Rating screenshot must be a valid URL'),
 
+    body('sellerFeedbackStatus')
+        .optional()
+        .isIn(['Pending', 'Completed', 'Not Required'])
+        .withMessage('Invalid seller feedback status'),
+
+    body('sellerFeedbackScreenshot')
+        .optional()
+        .isURL()
+        .withMessage('Seller feedback screenshot must be a valid URL'),
+
     body('refundStatus')
         .optional()
-        .isIn(['Not Applied', 'Applied', 'Received', 'Rejected'])
+        .isIn(['Pending', 'Received', 'Rejected'])
         .withMessage('Invalid refund status'),
 
     body('refundAmount')
@@ -111,12 +119,6 @@ export const validateUpdateOrder = [
         .isISO8601()
         .toDate()
         .withMessage('Refund form date must be a valid date'),
-
-    body('refundAppliedDate')
-        .optional()
-        .isISO8601()
-        .toDate()
-        .withMessage('Refund applied date must be a valid date'),
 
     body('refundReceivedDate')
         .optional()
@@ -134,3 +136,4 @@ export const validateUpdateOrder = [
         .isString()
         .withMessage('Notes must be a string')
 ];
+
