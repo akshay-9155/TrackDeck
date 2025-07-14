@@ -22,7 +22,7 @@ const useLogout = () => {
 
             // Clear user from Redux
             
-            toast.success("Logged out successfully");
+            toast.success(res?.data?.message || "✅ User logged out successfully");
             navigate("/login");
             dispatch(logoutUser());
 

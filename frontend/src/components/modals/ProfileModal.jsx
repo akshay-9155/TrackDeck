@@ -13,17 +13,19 @@ import { Close } from "@mui/icons-material";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
 import { useState } from "react";
 import UpdateProfileModal from "./UpdateProfileModal";
+import useUserProfile from "../../hooks/useUserProfile";
 
-const ProfileModal = ({ open, onClose, user }) => {
-  const [openUpdateModal, setOpenUpdateModal] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const handleDelete = () => {
-    setOpenDeleteDialog(true);
-  };
+const ProfileModal = ({ open, onClose, user, onEditProfile, onDeleteUser }) => {
+  // const [openUpdateModal, setOpenUpdateModal] = useState(false);
+  // const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  // const { loading, deleteAccount } = useUserProfile();
+  // const handleDelete = () => {
+  //   setOpenDeleteDialog(true);
+  // };
 
-  const handleUpdate = () => {
-    setOpenUpdateModal(true);
-  };
+  // const handleUpdate = () => {
+  //   setOpenUpdateModal(true);
+  // };
 
   return (
     <>
@@ -62,16 +64,16 @@ const ProfileModal = ({ open, onClose, user }) => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleUpdate} variant="contained" color="primary">
+          <Button onClick={onEditProfile} variant="contained" color="primary">
             Update Profile
           </Button>
-          <Button onClick={handleDelete} color="error">
+          <Button onClick={onDeleteUser} color="error">
             Delete Account
           </Button>
         </DialogActions>
       </Dialog>
 
-      <UpdateProfileModal
+      {/* <UpdateProfileModal
         open={openUpdateModal}
         onClose={() => setOpenUpdateModal(false)}
         user={user}
@@ -80,8 +82,11 @@ const ProfileModal = ({ open, onClose, user }) => {
       <DeleteConfirmDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
-        type="account"
-      />
+        onConfirm={deleteAccount}
+        title="Delete Account"
+        content="Are you sure you want to delete your account and all associated data?"
+        loading={loading}
+      /> */}
     </>
   );
 };

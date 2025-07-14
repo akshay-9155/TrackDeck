@@ -12,6 +12,7 @@ const useCreateOrder = () => {
             toast.success("Order created successfully");
             return { success: true, data: res.data.data };
         } catch (err) {
+            console.log(err);
             toast.error(err.response?.data?.message || "Order creation failed");
             return { success: false };
         } finally {

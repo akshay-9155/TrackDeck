@@ -14,7 +14,7 @@ const useUserProfile = () => {
         setLoading(true);
         try {
             const res = await axiosInstance.get("/user/profile");
-            dispatch(setUserProfile(res.data.message));
+            dispatch(setUserProfile(res?.data?.data));
         } catch (err) {
             toast.error("Failed to fetch profile");
         } finally {
@@ -26,8 +26,7 @@ const useUserProfile = () => {
         try {
             const res = await axiosInstance.put("/user/profile", profileData);
             toast.success("Profile updated successfully");
-            console.log(res.data);
-            dispatch(setUserProfile(res.data.message));
+            dispatch(setUserProfile(res?.data?.data));
             return { success: true };
         } catch (err) {
             toast.error(err.response?.data?.message || "Update failed");

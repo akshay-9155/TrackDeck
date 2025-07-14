@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { genderOptions } from "../../constants/formOptions.js";
 import useUserProfile from "../../hooks/useUserProfile.js";
 
-const UpdateProfileModal = ({ open, onClose, userData }) => {
+const UpdateProfileModal = ({ open, onClose, userData, refresh }) => {
   const { updateUserProfile, loading } = useUserProfile();
   const [error, setError] = useState(null);
 
@@ -33,6 +33,7 @@ const UpdateProfileModal = ({ open, onClose, userData }) => {
     setError(null);
     const result = await updateUserProfile(data);
     if (result.success) {
+      refresh();
       onClose();
     } else {
       setError(result.message || "Update failed");

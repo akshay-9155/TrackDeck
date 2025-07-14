@@ -7,10 +7,25 @@ import {
   Typography,
   Box,
   Divider,
+  Link,
 } from "@mui/material";
+
+const formatDate = (date) => (date ? new Date(date).toLocaleDateString() : "-");
 
 const ViewOrderModal = ({ open, onClose, order }) => {
   if (!order) return null;
+
+  const {
+    feedback,
+    product,
+    timeline,
+    dealer,
+    review,
+    rating,
+    sellerFeedback,
+    refund,
+    notes,
+  } = order;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -21,99 +36,137 @@ const ViewOrderModal = ({ open, onClose, order }) => {
           gridTemplateColumns={{ xs: "1fr", sm: "1fr 1fr" }}
           gap={2}
         >
+          {/* Product Info */}
           <Typography>
-            <strong>Product Name:</strong> {order.productName}
+            <strong>Display Name:</strong> {product.displayName}
           </Typography>
           <Typography>
-            <strong>Original Name:</strong> {order.productOriginalName}
+            <strong>Original Name:</strong> {product.originalName}
           </Typography>
           <Typography>
-            <strong>Platform:</strong> {order.platform}
+            <strong>Platform:</strong> {product.platform}
           </Typography>
           <Typography>
-            <strong>Price:</strong> ₹{order.price}
+            <strong>Condition:</strong> {product.condition}
           </Typography>
           <Typography>
-            <strong>Less:</strong> ₹{order.less}
+            <strong>Price:</strong> ₹{product.price}
           </Typography>
           <Typography>
-            <strong>Order Date:</strong>{" "}
-            {new Date(order.orderDate).toLocaleDateString()}
+            <strong>Less:</strong> ₹{product.less}
           </Typography>
           <Typography>
-            <strong>Delivery Date:</strong>{" "}
-            {order.deliveryDate
-              ? new Date(order.deliveryDate).toLocaleDateString()
-              : "-"}
-          </Typography>
-          <Typography>
-            <strong>Delivered:</strong> {order.isDelivered ? "Yes" : "No"}
+            <strong>Product Link:</strong>{" "}
+            <Link href={product.link} target="_blank" rel="noopener noreferrer">
+              Open Link
+            </Link>
           </Typography>
 
           <Divider gridColumn="span 2" sx={{ my: 2 }} />
 
+          {/* Dealer Info */}
           <Typography>
-            <strong>Review Status:</strong> {order.reviewStatus}
+            <strong>Dealer Name:</strong> {dealer.info.name}
           </Typography>
           <Typography>
-            <strong>Rating Status:</strong> {order.ratingStatus}
+            <strong>Phone Number:</strong> {dealer.info.phoneNumber}
           </Typography>
           <Typography>
-            <strong>Review Text:</strong> {order.reviewText || "-"}
+            <strong>Dealer Platform:</strong> {dealer.platform}
           </Typography>
-          {order.reviewScreenshot && (
-            <a
-              href={order.reviewScreenshot}
+
+          <Divider gridColumn="span 2" sx={{ my: 2 }} />
+
+          {/* Timeline Info */}
+          <Typography>
+            <strong>Order Placed:</strong> {formatDate(timeline.orderPlacedAt)}
+          </Typography>
+          <Typography>
+            <strong>Form Submitted:</strong>{" "}
+            {formatDate(timeline.formSubmittedAt)}
+          </Typography>
+          <Typography>
+            <strong>Delivery Date:</strong> {formatDate(timeline.deliveryDate)}
+          </Typography>
+          <Typography>
+            <strong>Delivered:</strong> {timeline.isDelivered ? "Yes" : "No"}
+          </Typography>
+
+          <Divider gridColumn="span 2" sx={{ my: 2 }} />
+
+          {/* Feedback Info */}
+          <Typography>
+            <strong>Feedback Type:</strong> {feedback?.type || "-"}
+          </Typography>
+          <Typography>
+            <strong>Review Status:</strong> {review?.status}
+          </Typography>
+          <Typography>
+            <strong>Rating Status:</strong> {rating?.status}
+          </Typography>
+          <Typography>
+            <strong>Seller Feedback Status:</strong> {sellerFeedback?.status}
+          </Typography>
+          {review?.text && (
+            <Typography>
+              <strong>Review Text:</strong> {review.text}
+            </Typography>
+          )}
+          {review?.screenshot && (
+            <Link
+              href={review.screenshot}
               target="_blank"
               rel="noopener noreferrer"
             >
               View Review Screenshot
-            </a>
+            </Link>
           )}
-          {order.ratingScreenshot && (
-            <a
-              href={order.ratingScreenshot}
+          {rating?.screenshot && (
+            <Link
+              href={rating.screenshot}
               target="_blank"
               rel="noopener noreferrer"
             >
               View Rating Screenshot
-            </a>
+            </Link>
           )}
-
-          <Divider gridColumn="span 2" sx={{ my: 2 }} />
-
-          <Typography>
-            <strong>Refund Status:</strong> {order.refundStatus}
-          </Typography>
-          <Typography>
-            <strong>Refund Amount:</strong> ₹{order.refundAmount || 0}
-          </Typography>
-          {order.refundFormDate && (
-            <Typography>
-              <strong>Refund Form Date:</strong>{" "}
-              {new Date(order.refundFormDate).toLocaleDateString()}
-            </Typography>
-          )}
-          {order.refundReceivedDate && (
-            <Typography>
-              <strong>Refund Received:</strong>{" "}
-              {new Date(order.refundReceivedDate).toLocaleDateString()}
-            </Typography>
-          )}
-          {order.refundProof && (
-            <a
-              href={order.refundProof}
+          {sellerFeedback?.screenshot && (
+            <Link
+              href={sellerFeedback.screenshot}
               target="_blank"
               rel="noopener noreferrer"
             >
-              View Refund Proof
-            </a>
+              View Seller Feedback Screenshot
+            </Link>
           )}
 
           <Divider gridColumn="span 2" sx={{ my: 2 }} />
 
+          {/* Refund Info */}
+          <Typography>
+            <strong>Refund Status:</strong> {refund?.status}
+          </Typography>
+          <Typography>
+            <strong>Refund Amount:</strong> ₹{refund?.amount || 0}
+          </Typography>
+          <Typography>
+            <strong>Refund Form Date:</strong>{" "}
+            {formatDate(refund?.formSubmittedAt)}
+          </Typography>
+          <Typography>
+            <strong>Refund Received:</strong> {formatDate(refund?.receivedAt)}
+          </Typography>
+          {refund?.proof && (
+            <Link href={refund.proof} target="_blank" rel="noopener noreferrer">
+              View Refund Proof
+            </Link>
+          )}
+
+          <Divider gridColumn="span 2" sx={{ my: 2 }} />
+
+          {/* Notes */}
           <Typography gridColumn="span 2">
-            <strong>Notes:</strong> {order.notes || "-"}
+            <strong>Notes:</strong> {notes || "-"}
           </Typography>
         </Box>
       </DialogContent>

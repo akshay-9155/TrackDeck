@@ -19,6 +19,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
     formState: { errors },
     reset,
   } = useForm();
+
   const { createOrder, loading } = useCreateOrder();
 
   const onSubmit = async (data) => {
@@ -36,39 +37,85 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
       <DialogContent>
         <form id="create-order-form" onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2} mt={1}>
+            {/* Feedback Type */}
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Product Name"
+                label="Feedback Type"
+                select
                 fullWidth
-                {...register("productName", { required: "Required" })}
-                error={!!errors.productName}
-                helperText={errors.productName?.message}
-              />
+                defaultValue=""
+                {...register("feedbackType", {
+                  required: "Feedback type is required",
+                })}
+                error={!!errors.feedbackType}
+                helperText={errors.feedbackType?.message}
+              >
+                {["Rating", "ReviewLive", "Review", "Other"].map((type) => (
+                  <MenuItem key={type} value={type}>
+                    {type}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Grid>
+
+            {/* Product Info */}
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Original Name"
+                label="Order ID"
                 fullWidth
-                {...register("productOriginalName", { required: "Required" })}
-                error={!!errors.productOriginalName}
-                helperText={errors.productOriginalName?.message}
+                {...register("productOrderId", {
+                  required: "Order ID is required",
+                })}
+                error={!!errors.productOrderId}
+                helperText={errors.productOrderId?.message}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField
+                label="Display Name"
+                fullWidth
+                {...register("productDisplayName", {
+                  required: "Display name is required",
+                })}
+                error={!!errors.productDisplayName}
+                helperText={errors.productDisplayName?.message}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Original Name"
+                fullWidth
+                {...register("productOriginalName", {
+                  required: "Original name is required",
+                })}
+                error={!!errors.productOriginalName}
+                helperText={errors.productOriginalName?.message}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
                 label="Product Link"
                 fullWidth
                 {...register("productLink")}
+                error={!!errors.productLink}
+                helperText={errors.productLink?.message}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Platform"
-                fullWidth
+                label="Product Platform"
                 select
-                defaultValue="Amazon"
-                {...register("platform")}
+                fullWidth
+                defaultValue=""
+                {...register("productPlatform", {
+                  required: "Product platform is required",
+                })}
+                error={!!errors.productPlatform}
+                helperText={errors.productPlatform?.message}
               >
                 {["Amazon", "Flipkart", "Meesho", "Other"].map((option) => (
                   <MenuItem key={option} value={option}>
@@ -80,12 +127,34 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
 
             <Grid item xs={12} sm={6}>
               <TextField
+                label="Condition"
+                select
+                fullWidth
+                defaultValue=""
+                {...register("productCondition", {
+                  required: "Product condition is required",
+                })}
+                error={!!errors.productCondition}
+                helperText={errors.productCondition?.message}
+              >
+                {["Original", "Exchange", "Semi Empty", "Empty", "Other"].map(
+                  (condition) => (
+                    <MenuItem key={condition} value={condition}>
+                      {condition}
+                    </MenuItem>
+                  )
+                )}
+              </TextField>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
                 label="Price"
                 type="number"
                 fullWidth
-                {...register("price", { required: "Required" })}
-                error={!!errors.price}
-                helperText={errors.price?.message}
+                {...register("productPrice", { required: "Price is required" })}
+                error={!!errors.productPrice}
+                helperText={errors.productPrice?.message}
               />
             </Grid>
 
@@ -94,21 +163,79 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 label="Less"
                 type="number"
                 fullWidth
-                {...register("less", { required: "Required" })}
-                error={!!errors.less}
-                helperText={errors.less?.message}
+                {...register("productLess", { required: "Less is required" })}
+                error={!!errors.productLess}
+                helperText={errors.productLess?.message}
+              />
+            </Grid>
+
+            {/* Dealer Info */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Dealer Name"
+                fullWidth
+                {...register("dealerName", {
+                  required: "Dealer name is required",
+                })}
+                error={!!errors.dealerName}
+                helperText={errors.dealerName?.message}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Order Date"
-                type="date"
+                label="Dealer Phone"
                 fullWidth
+                {...register("dealerPhoneNumber")}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Telegram ID"
+                fullWidth
+                {...register("dealerTelegramId")}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Dealer Platform"
+                select
+                fullWidth
+                defaultValue=""
+                {...register("dealerPlatform", {
+                  required: "Dealer platform is required",
+                })}
+                error={!!errors.dealerPlatform}
+                helperText={errors.dealerPlatform?.message}
+              >
+                {["Telegram", "Whatsapp"].map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            {/* Timeline */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Order Placed"
+                type="date"
                 InputLabelProps={{ shrink: true }}
-                {...register("orderDate", { required: "Required" })}
-                error={!!errors.orderDate}
-                helperText={errors.orderDate?.message}
+                fullWidth
+                {...register("orderPlacedAt")}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Form Submitted"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                {...register("formSubmittedAt")}
               />
             </Grid>
 
@@ -116,9 +243,160 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               <TextField
                 label="Delivery Date"
                 type="date"
-                fullWidth
                 InputLabelProps={{ shrink: true }}
+                fullWidth
                 {...register("deliveryDate")}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Is Delivered?"
+                select
+                fullWidth
+                defaultValue="false"
+                {...register("isDelivered")}
+              >
+                <MenuItem value={true}>Yes</MenuItem>
+                <MenuItem value={false}>No</MenuItem>
+              </TextField>
+            </Grid>
+
+            {/* Feedback Status */}
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Review Status"
+                select
+                fullWidth
+                defaultValue=""
+                {...register("reviewStatus")}
+              >
+                {["Pending", "Completed", "Not Required"].map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Rating Status"
+                select
+                fullWidth
+                defaultValue=""
+                {...register("ratingStatus")}
+              >
+                {["Pending", "Completed", "Not Required"].map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Seller Feedback Status"
+                select
+                fullWidth
+                defaultValue=""
+                {...register("sellerFeedbackStatus")}
+              >
+                {["Pending", "Completed", "Not Required"].map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            {/* Screenshots */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Review Text"
+                fullWidth
+                {...register("reviewText")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Review Screenshot URL"
+                fullWidth
+                {...register("reviewScreenshot")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Rating Screenshot URL"
+                fullWidth
+                {...register("ratingScreenshot")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Seller Feedback Screenshot"
+                fullWidth
+                {...register("sellerFeedbackScreenshot")}
+              />
+            </Grid>
+
+            {/* Refund */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Refund Status"
+                select
+                fullWidth
+                defaultValue=""
+                {...register("refundStatus")}
+              >
+                {["Pending", "Received", "Rejected"].map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Refund Amount"
+                type="number"
+                fullWidth
+                {...register("refundAmount")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Refund Form Submitted At"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                {...register("refundFormSubmittedAt")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Refund Received At"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                {...register("refundReceivedAt")}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Refund Proof URL"
+                fullWidth
+                {...register("refundProof")}
+              />
+            </Grid>
+
+            {/* Notes */}
+            <Grid item xs={12}>
+              <TextField
+                label="Notes"
+                fullWidth
+                {...register("notes")}
+                multiline
+                rows={2}
               />
             </Grid>
           </Grid>

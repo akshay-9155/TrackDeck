@@ -14,14 +14,14 @@ const DeleteConfirmDialog = ({
   onClose,
   onConfirm,
   title = "Are you sure?",
-  description = "This action cannot be undone.",
-  loading = false,
+  content = "This action cannot be undone.",
+  loading
 }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{description}</DialogContentText>
+        <DialogContentText>{content}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={loading}>

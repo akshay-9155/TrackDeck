@@ -8,8 +8,8 @@ const useDeleteOrder = () => {
     const deleteOrder = async (orderId) => {
         setLoading(true);
         try {
-            await axiosInstance.delete(`/order/${orderId}`);
-            toast.success("Order deleted successfully");
+            const res = await axiosInstance.delete(`/order/${orderId}`);
+            toast.success(res?.data?.message || "✅ Order deleted successfully");
             return { success: true };
         } catch (err) {
             toast.error(err.response?.data?.message || "Order deletion failed");

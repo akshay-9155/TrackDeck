@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../utils/axiosInstance";
+import toast from "react-hot-toast";
 
 const useOrderSummary = () => {
     const [summary, setSummary] = useState({});
@@ -10,9 +11,10 @@ const useOrderSummary = () => {
         setLoading(true);
         try {
             const res = await axiosInstance.get("/order/summary/me");
-            setSummary(res.data.message);
+            setSummary(res?.data?.data);
         } catch (err) {
             setError(err.response?.data?.message || "Failed to fetch summary");
+            toast.error(err.response?.data?.message || "Failed to fetch summary");
         } finally {
             setLoading(false);
         }

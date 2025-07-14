@@ -61,14 +61,11 @@ export const registerUser = asyncHandler(async (req, res) => {
     return res
         .status(201)
         .cookie("refreshToken", refreshToken, options)
-        .json(new ApiResponse(201, "User registered successfully", {
+        .json(new ApiResponse(201, {
             user: userData,
             accessToken
-        }));
+        }, "User registered successfully"));
 });
-
-
-// controllers/auth.controller.js
 
 export const loginUser = asyncHandler(async (req, res) => {
     // Run express-validator result check
@@ -117,13 +114,11 @@ export const loginUser = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .cookie('refreshToken', refreshToken, cookieOptions)
-        .json(new ApiResponse(200, 'Login successful', {
+        .json(new ApiResponse(200, {
             user: userData,
             accessToken
-        }));
+        }, 'Login successful'));
 });
-
-
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
     const user = req.user;
@@ -131,7 +126,7 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
     // No need to query DB again since middleware already validated user and stripped sensitive info
     return res
         .status(200)
-        .json(new ApiResponse(200, "User fetched successfully", user));
+        .json(new ApiResponse(200, user, "User fetched successfully"));
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
@@ -160,8 +155,6 @@ export const logoutUser = asyncHandler(async (req, res) => {
         .clearCookie("refreshToken", options)
         .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
-  
-
 
 export const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;

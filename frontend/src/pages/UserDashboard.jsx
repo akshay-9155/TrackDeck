@@ -11,6 +11,9 @@ import useOrders from "../hooks/useOrders.js";
 import useOrderSummary from "../hooks/useOrderSummary.js";
 import useUserProfile from "../hooks/useUserProfile.js";
 import CreateOrderModal from "../components/CreateOrderModal.jsx";
+import UserDashboardSkeleton from "../components/skeleton/UserDashboardSkeleton.jsx";
+import OrderSummarySkeleton from "../components/skeleton/OrderSummarySkeleton.jsx";
+import OrderCardSkeleton from "../components/skeleton/OrderCardSkeleton .jsx";
 
 const UserDashboard = () => {
   const dispatch = useDispatch();
@@ -31,10 +34,12 @@ const UserDashboard = () => {
     userProfile,
     loading: loadingProfile,
     fetchProfile,
-    deleteUser,
+    deleteAccount,
   } = useUserProfile();
 
-  return (
+  return loadingProfile ? (
+    <UserDashboardSkeleton />
+  ) : (
     <Box sx={{ px: 3, py: 5 }}>
       <Typography variant="h4" gutterBottom>
         Welcome, {userProfile?.name}
@@ -53,7 +58,7 @@ const UserDashboard = () => {
       </Box>
 
       {loadingSummary ? (
-        <CircularProgress />
+        <OrderSummarySkeleton />
       ) : (
         <Grid container spacing={2}>
           <Grid item xs={6} md={3}>
@@ -86,7 +91,18 @@ const UserDashboard = () => {
       </Box>
 
       {loadingOrders ? (
-        <CircularProgress />
+        <Grid container spacing={2}>
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+          <OrderCardSkeleton />
+        </Grid>
       ) : (
         <Grid container spacing={2}>
           {orders?.length > 0 ? (
@@ -154,11 +170,10 @@ const UserDashboard = () => {
       <DeleteConfirmDialog
         open={openDeleteUser}
         onClose={() => setOpenDeleteUser(false)}
-        onConfirm={async () => {
-          await deleteUser();
-        }}
+        onConfirm={deleteAccount}
         title="Delete Account"
         content="Are you sure you want to delete your account and all associated data?"
+        loading={loadingProfile}
       />
     </Box>
   );
