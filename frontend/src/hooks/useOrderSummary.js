@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const useOrderSummary = () => {
     const [summary, setSummary] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { refreshOrderSummary } = useSelector(state => state.order);
 
     const fetchSummary = async () => {
         setLoading(true);
@@ -22,7 +24,7 @@ const useOrderSummary = () => {
 
     useEffect(() => {
         fetchSummary();
-    }, []);
+    }, [refreshOrderSummary]);
 
     return { summary, loading, error, fetchSummary };
 };

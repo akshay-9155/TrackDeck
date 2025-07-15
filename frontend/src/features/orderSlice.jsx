@@ -6,6 +6,7 @@ const initialState = {
   orderSummary: null,
   loading: false,
   error: null,
+  refreshOrderSummary : false
 };
 
 const orderSlice = createSlice({
@@ -28,10 +29,19 @@ const orderSlice = createSlice({
       state.orders = [];
       state.orderSummary = null;
     },
+    toggleRefreshOrderSummary: (state) => {
+      state.refreshOrderSummary = !state.refreshOrderSummary
+    }
   },
 });
 
-export const { setOrders, setOrderSummary, setLoading, setError, clearOrders } =
-  orderSlice.actions;
+export const {
+  setOrders,
+  setOrderSummary,
+  setLoading,
+  setError,
+  clearOrders,
+  toggleRefreshOrderSummary,
+} = orderSlice.actions;
 
 export default orderSlice.reducer;

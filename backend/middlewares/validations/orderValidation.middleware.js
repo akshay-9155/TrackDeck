@@ -2,56 +2,56 @@
 import { body } from 'express-validator';
 
 export const validateCreateOrder = [
-    // body('feedbackType')
-    //     .notEmpty().withMessage('Feedback type is required')
-    //     .isIn(['Rating', 'ReviewLive', 'Review', 'Other'])
-    //     .withMessage('Invalid feedback type'),
+    body('feedbackType')
+        .notEmpty().withMessage('Feedback type is required')
+        .isIn(['Rating', 'ReviewLive', 'Review', 'Other'])
+        .withMessage('Invalid feedback type'),
 
-    // body('productOrderId').notEmpty().withMessage('Order ID is required'),
-    // body('productDisplayName').notEmpty().withMessage('Display name is required'),
-    // body('productOriginalName').notEmpty().withMessage('Original name is required'),
-    // body('productLink').optional().isURL().withMessage('Invalid product link'),
+    body('productOrderId').notEmpty().withMessage('Order ID is required'),
+    body('productDisplayName').notEmpty().withMessage('Display name is required'),
+    body('productOriginalName').notEmpty().withMessage('Original name is required'),
+    body('productLink').optional().isURL().withMessage('Invalid product link'),
 
-    // body('productPlatform')
-    //     .notEmpty()
-    //     .isIn(['Amazon', 'Flipkart', 'Meesho', 'Other'])
-    //     .withMessage('Invalid product platform'),
+    body('productPlatform')
+        .notEmpty()
+        .isIn(['Amazon', 'Flipkart', 'Meesho', 'Other'])
+        .withMessage('Invalid product platform'),
 
-    // body('productCondition')
-    //     .notEmpty()
-    //     .isIn(['Original', 'Exchange', 'Semi Empty', 'Empty', 'Other'])
-    //     .withMessage('Invalid product condition'),
+    body('productCondition')
+        .notEmpty()
+        .isIn(['Original', 'Exchange', 'Semi Empty', 'Empty', 'Other'])
+        .withMessage('Invalid product condition'),
 
-    // body('productPrice').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
-    // body('productLess').isFloat().withMessage('Less must be a number'),
+    body('productPrice').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+    body('productLess').isFloat().withMessage('Less must be a number'),
 
-    // body('dealerName').notEmpty().withMessage('Dealer name is required'),
-    // body('dealerPhoneNumber').optional().isString(),
-    // body('dealerTelegramId').optional().isString(),
-    // body('dealerPlatform').notEmpty().isIn(['Telegram', 'Whatsapp']).withMessage('Invalid dealer platform'),
+    body('dealerName').notEmpty().withMessage('Dealer name is required'),
+    body('dealerPhoneNumber').optional().isString(),
+    body('dealerTelegramId').optional().isString(),
+    body('dealerPlatform').notEmpty().isIn(['Telegram', 'Whatsapp']).withMessage('Invalid dealer platform'),
 
-    // body('orderPlacedAt').optional().isISO8601().toDate(),
-    // body('formSubmittedAt').optional().isISO8601().toDate(),
-    // body('deliveryDate').optional().isISO8601().toDate(),
-    // body('isDelivered').optional().isBoolean(),
+    body('orderPlacedAt').optional().isISO8601().toDate(),
+    body('formSubmittedAt').optional().isISO8601().toDate(),
+    body('deliveryDate').optional().isISO8601().toDate(),
+    body('isDelivered').optional().isBoolean(),
 
-    // body('reviewStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
-    // body('reviewText').optional().isString(),
-    // body('reviewScreenshot').optional().isURL(),
+    body('reviewStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
+    body('reviewText').optional().isString(),
+    body('reviewScreenshot').optional().isURL(),
 
-    // body('ratingStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
-    // body('ratingScreenshot').optional().isURL(),
+    body('ratingStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
+    body('ratingScreenshot').optional().isURL(),
 
-    // body('sellerFeedbackStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
-    // body('sellerFeedbackScreenshot').optional().isURL(),
+    body('sellerFeedbackStatus').optional().isIn(['Pending', 'Completed', 'Not Required']),
+    body('sellerFeedbackScreenshot').optional().isURL(),
 
-    // body('refundStatus').optional().isIn(['Pending', 'Received', 'Rejected']),
-    // body('refundAmount').optional().isFloat({ min: 0 }),
-    // body('refundFormSubmittedAt').optional().isISO8601().toDate(),
-    // body('refundReceivedAt').optional().isISO8601().toDate(),
-    // body('refundProof').optional().isURL(),
+    body('refundStatus').optional().isIn(['Pending', 'Received', 'Rejected']),
+    body('refundAmount').optional().isFloat({ min: 0 }),
+    body('refundFormSubmittedAt').optional().isISO8601().toDate(),
+    body('refundReceivedAt').optional().isISO8601().toDate(),
+    body('refundProof').optional().isURL(),
 
-    // body('notes').optional().isString()
+    body('notes').optional().isString()
 ];
 
 export const validateUpdateOrder = [

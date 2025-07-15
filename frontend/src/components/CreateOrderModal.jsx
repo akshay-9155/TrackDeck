@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import useCreateOrder from "../hooks/useCreateOrder.js";
+import { cleanObject } from "../utils/helper.js";
 
 const CreateOrderModal = ({ open, onClose, refresh }) => {
   const {
@@ -23,7 +24,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
   const { createOrder, loading } = useCreateOrder();
 
   const onSubmit = async (data) => {
-    const result = await createOrder(data);
+    const result = await createOrder(cleanObject(data));
     if (result.success) {
       reset();
       onClose();
