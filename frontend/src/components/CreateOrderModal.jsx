@@ -39,7 +39,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
         <form id="create-order-form" onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2} mt={1}>
             {/* Feedback Type */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Feedback Type"
                 select
@@ -60,7 +60,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             </Grid>
 
             {/* Product Info */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Order ID"
                 fullWidth
@@ -72,7 +72,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Display Name"
                 fullWidth
@@ -84,7 +84,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Original Name"
                 fullWidth
@@ -96,7 +96,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Product Link"
                 fullWidth
@@ -106,7 +106,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Product Platform"
                 select
@@ -126,7 +126,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Condition"
                 select
@@ -148,7 +148,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Price"
                 type="number"
@@ -159,7 +159,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Less"
                 type="number"
@@ -171,7 +171,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             </Grid>
 
             {/* Dealer Info */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Dealer Name"
                 fullWidth
@@ -183,7 +183,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Dealer Phone"
                 fullWidth
@@ -191,7 +191,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Telegram ID"
                 fullWidth
@@ -199,7 +199,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Dealer Platform"
                 select
@@ -220,7 +220,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             </Grid>
 
             {/* Timeline */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Order Placed"
                 type="date"
@@ -230,7 +230,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Form Submitted"
                 type="date"
@@ -240,7 +240,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Delivery Date"
                 type="date"
@@ -250,7 +250,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Is Delivered?"
                 select
@@ -264,7 +264,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             </Grid>
 
             {/* Feedback Status */}
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 label="Review Status"
                 select
@@ -279,7 +279,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 label="Rating Status"
                 select
@@ -294,7 +294,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 label="Seller Feedback Status"
                 select
@@ -311,28 +311,28 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             </Grid>
 
             {/* Screenshots */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Review Text"
                 fullWidth
                 {...register("reviewText")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Review Screenshot URL"
                 fullWidth
                 {...register("reviewScreenshot")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Rating Screenshot URL"
                 fullWidth
                 {...register("ratingScreenshot")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Seller Feedback Screenshot"
                 fullWidth
@@ -341,7 +341,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             </Grid>
 
             {/* Refund */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Status"
                 select
@@ -356,7 +356,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Amount"
                 type="number"
@@ -364,7 +364,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 {...register("refundAmount")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Form Submitted At"
                 type="date"
@@ -373,7 +373,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 {...register("refundFormSubmittedAt")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Received At"
                 type="date"
@@ -382,7 +382,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 {...register("refundReceivedAt")}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Refund Proof URL"
                 fullWidth
@@ -391,7 +391,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             </Grid>
 
             {/* Notes */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Notes"
                 fullWidth

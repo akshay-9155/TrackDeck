@@ -33,7 +33,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
     handleSubmit,
     formState: { errors },
     reset,
-    watch
+    watch,
   } = useForm();
 
   const { updateOrder, loading } = useUpdateOrder();
@@ -98,7 +98,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
         <DialogContent dividers>
           <Grid container spacing={2}>
             {/* Feedback */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Feedback Type"
                 select
@@ -115,28 +115,28 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Product Info */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Product Display Name"
                 fullWidth
                 {...register("productDisplayName")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Product Original Name"
                 fullWidth
                 {...register("productOriginalName")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Product Link"
                 fullWidth
                 {...register("productLink")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 label="Product Platform"
@@ -151,7 +151,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 label="Condition"
@@ -166,7 +166,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <TextField
                 label="Price"
                 type="number"
@@ -174,7 +174,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 {...register("productPrice")}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <TextField
                 label="Less"
                 type="number"
@@ -184,28 +184,28 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Dealer */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Dealer Name"
                 fullWidth
                 {...register("dealerInfoName")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Dealer Phone"
                 fullWidth
                 {...register("dealerInfoPhoneNumber")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Telegram ID"
                 fullWidth
                 {...register("dealerInfoTelegramId")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 label="Dealer Platform"
@@ -222,7 +222,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Timeline */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Delivery Date"
                 type="date"
@@ -231,7 +231,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 {...register("deliveryDate")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Is Delivered"
                 select
@@ -245,7 +245,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Review */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 label="Review Status"
@@ -260,7 +260,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Review Text"
                 fullWidth
@@ -269,7 +269,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 {...register("reviewText")}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Review Screenshot URL"
                 fullWidth
@@ -278,7 +278,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Rating */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 label="Rating Status"
@@ -293,7 +293,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Rating Screenshot URL"
                 fullWidth
@@ -302,7 +302,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Seller Feedback */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 label="Seller Feedback Status"
@@ -317,7 +317,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Seller Feedback Screenshot"
                 fullWidth
@@ -326,7 +326,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Refund */}
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 select
                 label="Refund Status"
@@ -341,7 +341,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Amount"
                 type="number"
@@ -349,7 +349,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 {...register("refundAmount")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Form Date"
                 type="date"
@@ -358,7 +358,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 {...register("refundFormDate")}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Received Date"
                 type="date"
@@ -367,7 +367,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 {...register("refundReceivedDate")}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Refund Proof URL"
                 fullWidth
@@ -376,7 +376,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Notes */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 label="Notes"
                 fullWidth

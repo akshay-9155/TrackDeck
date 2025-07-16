@@ -1,4 +1,3 @@
-// src/components/Navbar.jsx
 import {
   AppBar,
   Toolbar,
@@ -22,14 +21,37 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <AppBar position="fixed" color="default" elevation={2}>
+    <AppBar
+      position="fixed"
+      color="transparent"
+      elevation={0}
+      sx={{
+        background: "linear-gradient(135deg, #1a2a44, #0d1b2a)",
+        borderBottom: "1px solid rgba(16, 48, 46, 0.2)",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          background:
+            "radial-gradient(circle, rgba(76, 81, 191, 0.1), transparent 70%)",
+          opacity: 0.5,
+          zIndex: -1,
+        },
+      }}
+    >
       <Toolbar
         sx={{
           display: "flex",
           justifyContent: "space-between",
           flexWrap: "wrap",
           px: { xs: 2, sm: 4 },
-          py: 1,
+          py: 1.5,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         <Typography
@@ -38,7 +60,13 @@ const Navbar = () => {
           sx={{
             cursor: "pointer",
             fontWeight: "bold",
-            color: "primary.main",
+            color: "#e0e7ff",
+            textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+            transition: "color 0.3s ease",
+            "&:hover": {
+              color: "#bfdbfe",
+              textShadow: "0 0 5px rgba(191, 219, 254, 0.5)",
+            },
           }}
         >
           TrackDeck
@@ -48,7 +76,14 @@ const Navbar = () => {
           <Button
             onClick={() => navigate("/about")}
             sx={{
-              borderBottom: isActive("/about") ? "2px solid #1976d2" : "none",
+              color: "#93c5fd",
+              borderBottom: isActive("/about") ? "2px solid #93c5fd" : "none",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                color: "#bfdbfe",
+                borderBottom: "2px solid #bfdbfe",
+                textShadow: "0 0 5px rgba(191, 219, 254, 0.5)",
+              },
             }}
           >
             About
@@ -56,7 +91,14 @@ const Navbar = () => {
           <Button
             onClick={() => navigate("/terms")}
             sx={{
-              borderBottom: isActive("/terms") ? "2px solid #1976d2" : "none",
+              color: "#93c5fd",
+              borderBottom: isActive("/terms") ? "2px solid #93c5fd" : "none",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                color: "#bfdbfe",
+                borderBottom: "2px solid #bfdbfe",
+                textShadow: "0 0 5px rgba(191, 219, 254, 0.5)",
+              },
             }}
           >
             Terms
@@ -71,11 +113,20 @@ const Navbar = () => {
                 )
               }
               sx={{
+                color: "#60a5fa",
+                border: "1px solid #60a5fa",
                 borderBottom: isActive(
                   user.role === "admin" ? "/admin/dashboard" : "/user/dashboard"
                 )
-                  ? "2px solid #1976d2"
+                  ? "2px solid #60a5fa"
                   : "none",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  color: "#93c5fd",
+                  borderColor: "#93c5fd",
+                  borderBottom: "2px solid #93c5fd",
+                  backgroundColor: "rgba(147, 197, 253, 0.1)",
+                },
               }}
             >
               {user.role === "admin" ? "Admin Dashboard" : "User Dashboard"}
@@ -88,6 +139,12 @@ const Navbar = () => {
               onClick={logout}
               disabled={loading}
               title="Logout"
+              sx={{
+                color: "#f87171",
+                transition: "all 0.3s ease",
+                "&:hover": { color: "#ef4444", transform: "scale(1.1)" },
+                "&:disabled": { color: "#9ca3af" },
+              }}
             >
               <LogoutIcon />
             </IconButton>
@@ -96,9 +153,16 @@ const Navbar = () => {
               <Button
                 onClick={() => navigate("/login")}
                 sx={{
+                  color: "#93c5fd",
                   borderBottom: isActive("/login")
-                    ? "2px solid #1976d2"
+                    ? "2px solid #93c5fd"
                     : "none",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    color: "#bfdbfe",
+                    borderBottom: "2px solid #bfdbfe",
+                    textShadow: "0 0 5px rgba(191, 219, 254, 0.5)",
+                  },
                 }}
               >
                 Login
@@ -106,9 +170,16 @@ const Navbar = () => {
               <Button
                 onClick={() => navigate("/signup")}
                 sx={{
+                  color: "#93c5fd",
                   borderBottom: isActive("/signup")
-                    ? "2px solid #1976d2"
+                    ? "2px solid #93c5fd"
                     : "none",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    color: "#bfdbfe",
+                    borderBottom: "2px solid #bfdbfe",
+                    textShadow: "0 0 5px rgba(191, 219, 254, 0.5)",
+                  },
                 }}
               >
                 Signup

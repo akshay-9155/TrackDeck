@@ -62,7 +62,7 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             </Link>
           </Typography>
 
-          <Divider gridColumn="span 2" sx={{ my: 2 }} />
+          <Divider sx={{ gridColumn: "span 2", my: 2 }} />
 
           {/* Dealer Info */}
           <Typography>
@@ -75,7 +75,7 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             <strong>Dealer Platform:</strong> {dealer.platform}
           </Typography>
 
-          <Divider gridColumn="span 2" sx={{ my: 2 }} />
+          <Divider sx={{ gridColumn: "span 2", my: 2 }} />
 
           {/* Timeline Info */}
           <Typography>
@@ -92,7 +92,7 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             <strong>Delivered:</strong> {timeline.isDelivered ? "Yes" : "No"}
           </Typography>
 
-          <Divider gridColumn="span 2" sx={{ my: 2 }} />
+          <Divider sx={{ gridColumn: "span 2", my: 2 }} />
 
           {/* Feedback Info */}
           <Typography>
@@ -140,7 +140,7 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             </Link>
           )}
 
-          <Divider gridColumn="span 2" sx={{ my: 2 }} />
+          <Divider sx={{ gridColumn: "span 2", my: 2 }} />
 
           {/* Refund Info */}
           <Typography>
@@ -162,7 +162,7 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             </Link>
           )}
 
-          <Divider gridColumn="span 2" sx={{ my: 2 }} />
+          <Divider sx={{ gridColumn: "span 2", my: 2 }} />
 
           {/* Notes */}
           <Typography gridColumn="span 2">

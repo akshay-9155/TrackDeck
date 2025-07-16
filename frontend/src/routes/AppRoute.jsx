@@ -27,7 +27,8 @@ const AppRoutes = () => {
         style={{
           flex: "1 0 auto",
           paddingTop: "64px", // height of AppBar (default MUI AppBar height)
-          paddingBottom: "80px", // space for footer
+          paddingBottom: "68px", // space for footer
+          background: "linear-gradient(135deg, #1a2a44, #0d1b2a, #10302E)",
         }}
       >
         <Routes>

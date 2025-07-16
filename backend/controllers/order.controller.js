@@ -9,7 +9,6 @@ import { Order } from '../models/order.model.js';
 export const createOrder = asyncHandler(async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors);
         throw new ApiError(422, errors.array()[0].msg);
     }
 
