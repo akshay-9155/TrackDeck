@@ -75,7 +75,6 @@ const Login = () => {
             label="Email"
             fullWidth
             margin="normal"
-            defaultValue="akshay@example.com"
             {...register("email", {
               required: "Email is required",
               pattern: {
@@ -115,7 +114,6 @@ const Login = () => {
             label="Password"
             type={showPassword ? "text" : "password"}
             fullWidth
-            defaultValue="Akshay@123"
             margin="normal"
             {...register("password", {
               required: "Password is required",

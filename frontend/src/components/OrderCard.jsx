@@ -78,41 +78,63 @@ const OrderCard = ({ order, onView, onEdit, onDelete }) => {
         />
 
         {/* Status Tags */}
-        <Stack direction="row" spacing={1.5} flexWrap="wrap" mb={2.5}>
-          {feedback?.type && (
-            <Chip
-              label={`Feedback: ${feedback.type}`}
-              color="default"
-              sx={{
-                background: "rgba(224, 231, 255, 0.1)",
-                color: "#e0e7ff",
-                "& .MuiChip-label": { fontWeight: 500 },
-              }}
-            />
-          )}
-          {statusLabel && (
-            <Chip
-              label={statusLabel}
-              color="info"
-              sx={{
-                background: "rgba(59, 130, 246, 0.1)",
-                color: "#93c5fd",
-                "& .MuiChip-label": { fontWeight: 500 },
-              }}
-            />
-          )}
-          {refund?.status && (
-            <Chip
-              label={`Refund: ${refund.status}`}
-              color="warning"
-              sx={{
-                background: "rgba(245, 158, 11, 0.1)",
-                color: "#facc15",
-                "& .MuiChip-label": { fontWeight: 500 },
-              }}
-            />
-          )}
-        </Stack>
+        <Box mb={2.5}>
+          <Box
+            display="grid"
+            gridTemplateColumns="repeat(2, auto)"
+            gap={1.5}
+            sx={{
+              "@media (max-width: 400px)": {
+                gridTemplateColumns: "1fr",
+              },
+            }}
+          >
+            {feedback?.type && (
+              <Chip
+                label={`Feedback: ${feedback.type}`}
+                sx={{
+                  background: "rgba(255, 255, 255, 0.08)",
+                  color: "#e0e7ff",
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  px: 1.5,
+                  height: 30,
+                  borderRadius: 1,
+                }}
+              />
+            )}
+            {statusLabel && (
+              <Chip
+                label={statusLabel}
+                sx={{
+                  background: "rgba(59, 130, 246, 0.2)",
+                  color: "#93c5fd",
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  px: 1.5,
+                  height: 30,
+                  borderRadius: 1,
+                }}
+              />
+            )}
+            {refund?.status && (
+              <Chip
+                label={`Refund: ${refund.status}`}
+                sx={{
+                  background: "rgba(245, 158, 11, 0.15)",
+                  color: "#facc15",
+                  fontSize: "0.75rem",
+                  fontWeight: 500,
+                  px: 1.5,
+                  height: 30,
+                  borderRadius: 1,
+                  gridColumn: "1 / span 2", // spans full width
+                  justifySelf: "start",
+                }}
+              />
+            )}
+          </Box>
+        </Box>
 
         {/* Dealer and Timeline Info */}
         <Box mb={2.5}>
