@@ -1,5 +1,5 @@
 // backend/controllers/user.controller.js
-import asyncHandler from "../utils/asyncHandler.js";
+import asyncHandler from "../utils/AsyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import { validationResult } from "express-validator";
@@ -119,4 +119,3 @@ export const deleteUserAccount = asyncHandler(async (req, res) => {
             new ApiResponse(200, null, "Account and all related orders deleted successfully")
         );
 });
-  

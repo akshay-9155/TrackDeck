@@ -1,6 +1,6 @@
 // backend/controllers/order.controller.js
 import { validationResult } from 'express-validator';
-import asyncHandler from '../utils/asyncHandler.js';
+import asyncHandler from '../utils/AsyncHandler.js';
 import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
 import { validateObjectId } from '../utils/helper.js';
@@ -46,7 +46,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     } = req.body;
 
     const existingOrder = await Order.findOne({ 'product.orderId': productOrderId });
-    if(existingOrder){
+    if (existingOrder) {
         throw new ApiError(409, "Order with this ID already exists.");
     }
 
@@ -174,7 +174,7 @@ export const getAllOrders = asyncHandler(async (req, res) => {
     );
 });
 
-  
+
 export const getOrderById = asyncHandler(async (req, res) => {
     const orderId = req.params.id;
     const userId = req.user._id;

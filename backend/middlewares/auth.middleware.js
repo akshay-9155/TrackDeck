@@ -1,7 +1,7 @@
 import ApiError from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
-import asyncHandler from "../utils/asyncHandler.js";
+import asyncHandler from "../utils/AsyncHandler.js";
 
 export const authenticate = asyncHandler(async (req, _, next) => {
     // Get token from header or cookie

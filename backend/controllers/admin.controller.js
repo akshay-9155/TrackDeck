@@ -1,8 +1,7 @@
 // backend/controllers/admin.controller.js
-import asyncHandler from "../utils/asyncHandler.js";
+import asyncHandler from "../utils/AsyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
-import { validationResult } from "express-validator";
 import { Order } from "../models/order.model.js";
 import { User } from "../models/user.model.js";
 import { validateObjectId } from "../utils/helper.js";
