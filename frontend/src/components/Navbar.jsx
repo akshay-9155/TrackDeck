@@ -54,23 +54,21 @@ const Navbar = () => {
           zIndex: 1,
         }}
       >
-        <Typography
-          variant="h6"
+        <Box
           onClick={() => navigate("/")}
+          component="img"
+          src="/logo.png"
+          alt="TrackDeck Logo"
           sx={{
+            width: 120,
+            height: 36,
             cursor: "pointer",
-            fontWeight: "bold",
-            color: "#e0e7ff",
-            textShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
-            transition: "color 0.3s ease",
+            transition: "transform 0.2s ease, box-shadow 0.2s ease",
             "&:hover": {
-              color: "#bfdbfe",
-              textShadow: "0 0 5px rgba(191, 219, 254, 0.5)",
+              transform: "scale(1.1)",
             },
           }}
-        >
-          TrackDeck
-        </Typography>
+        />
 
         <Box display="flex" gap={2} alignItems="center">
           <Button
