@@ -24,7 +24,7 @@ const useLogin = () => {
 
             return { success: true };
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             const message = error.response?.data?.message || "Login failed";
             toast.error(message);
             return { success: false };

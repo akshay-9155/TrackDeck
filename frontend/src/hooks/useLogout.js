@@ -28,7 +28,7 @@ const useLogout = () => {
 
             return { success: true };
         } catch (err) {
-            console.error("Logout error:", err);
+            // console.error("Logout error:", err);
             toast.error(err.response?.data?.message || "Logout failed");
             setError(err.response?.data?.message || "Logout failed");
             return { success: false };

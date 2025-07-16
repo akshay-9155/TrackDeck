@@ -23,7 +23,7 @@ const useOrders = (filters) => {
             const response = await axiosInstance.get(`/order?${queryParams}`);
             dispatch(setOrders(response.data?.data?.orders || []));
         } catch (err) {
-            console.error("Failed to fetch orders:", err);
+            // console.error("Failed to fetch orders:", err);
             const message = err.response?.data?.message || "Failed to load orders";
             toast.error(message);
             setLocalError(message);
