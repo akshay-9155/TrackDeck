@@ -8,6 +8,7 @@ import {
   MenuItem,
   Grid,
   CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import useCreateOrder from "../hooks/useCreateOrder.js";
@@ -51,6 +52,10 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 error={!!errors.feedbackType}
                 helperText={errors.feedbackType?.message}
               >
+                <MenuItem value="" disabled>
+                  Select a feedback type
+                </MenuItem>
+
                 {["Rating", "ReviewLive", "Review", "Other"].map((type) => (
                   <MenuItem key={type} value={type}>
                     {type}
@@ -94,6 +99,24 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 error={!!errors.productOriginalName}
                 helperText={errors.productOriginalName?.message}
               />
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Tooltip
+                title="Whose account was used to order? Type the profile name (yours, friend’s, etc.)."
+                arrow
+                placement="top"
+              >
+                <TextField
+                  label="Account Used for Purchase (e.g. yours, friend’s)"
+                  fullWidth
+                  {...register("productAccountInfo", {
+                    required: "Original name is required",
+                  })}
+                  error={!!errors.productAccountInfo}
+                  helperText={errors.productAccountInfo?.message}
+                />
+              </Tooltip>
             </Grid>
 
             <Grid size={{ xs: 12 }}>
@@ -153,7 +176,9 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 label="Price"
                 type="number"
                 fullWidth
-                {...register("productPrice", { required: "Price is required" })}
+                {...register("productPrice", {
+                  required: "Price is required",
+                })}
                 error={!!errors.productPrice}
                 helperText={errors.productPrice?.message}
               />
@@ -232,7 +257,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
-                label="Form Submitted"
+                label="Order Form Submitted"
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 fullWidth
@@ -279,6 +304,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 ))}
               </TextField>
             </Grid>
+
             <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 label="Rating Status"
@@ -294,6 +320,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 ))}
               </TextField>
             </Grid>
+
             <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 label="Seller Feedback Status"
@@ -356,14 +383,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                label="Refund Amount"
-                type="number"
-                fullWidth
-                {...register("refundAmount")}
-              />
-            </Grid>
+
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Form Submitted At"

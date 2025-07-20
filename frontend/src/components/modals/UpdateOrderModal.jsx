@@ -9,6 +9,7 @@ import {
   MenuItem,
   Grid,
   CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import useUpdateOrder from "../../hooks/useUpdateOrder.js";
@@ -45,6 +46,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
         feedbackType: order.feedback?.type || "",
         productDisplayName: order.product?.displayName || "",
         productOriginalName: order.product?.originalName || "",
+        productAccountInfo: order.product?.accountInfo || "",
         productLink: order.product?.link || "",
         productPlatform: order.product?.platform || "",
         productCondition: order.product?.condition || "",
@@ -128,6 +130,19 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 fullWidth
                 {...register("productOriginalName")}
               />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Tooltip
+                title="Whose account was used to order? Type the profile name (yours, friend’s, etc.)."
+                arrow
+                placement="top"
+              >
+                <TextField
+                  label="Account Used for Purchase (e.g. yours, friend’s)"
+                  fullWidth
+                  {...register("productAccountInfo")}
+                />
+              </Tooltip>
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField

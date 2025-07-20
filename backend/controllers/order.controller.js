@@ -17,6 +17,7 @@ export const createOrder = asyncHandler(async (req, res) => {
         productOrderId,
         productDisplayName,
         productOriginalName,
+        productAccountInfo,
         productLink,
         productPlatform,
         productCondition,
@@ -59,6 +60,7 @@ export const createOrder = asyncHandler(async (req, res) => {
             orderId: productOrderId,
             displayName: productDisplayName,
             originalName: productOriginalName,
+            accountInfo :productAccountInfo,
             link: productLink,
             platform: productPlatform,
             condition: productCondition,
@@ -219,6 +221,7 @@ export const updateOrder = asyncHandler(async (req, res) => {
 
         'product.displayName': req.body.productDisplayName,
         'product.originalName': req.body.productOriginalName,
+        'product.accountInfo': req.body.productAccountInfo,
         'product.link': req.body.productLink,
         'product.platform': req.body.productPlatform,
         'product.condition': req.body.productCondition,

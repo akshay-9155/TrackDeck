@@ -32,6 +32,11 @@ const OrderSchema = new mongoose.Schema({
             required: true,
             trim: true
         },
+        accountInfo: {
+            type: String,
+            required: true,
+            trim: true
+        },
         link: {
             type: String,
             trim: true

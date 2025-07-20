@@ -10,6 +10,7 @@ export const validateCreateOrder = [
     body('productOrderId').notEmpty().withMessage('Order ID is required'),
     body('productDisplayName').notEmpty().withMessage('Display name is required'),
     body('productOriginalName').notEmpty().withMessage('Original name is required'),
+    body('productAccountInfo').notEmpty().withMessage('Account info is required'),
     body('productLink').optional().isURL().withMessage('Invalid product link'),
 
     body('productPlatform')
