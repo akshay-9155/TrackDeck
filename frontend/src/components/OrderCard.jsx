@@ -80,12 +80,16 @@ const OrderCard = ({ order, onView, onEdit, onDelete }) => {
         {/* Status Tags */}
         <Box mb={2.5}>
           <Box
-            display="grid"
-            gridTemplateColumns="repeat(2, auto)"
+            display="flex"
+            flexWrap="wrap"
             gap={1.5}
             sx={{
-              "@media (max-width: 400px)": {
-                gridTemplateColumns: "1fr",
+              "& > *": {
+                flexGrow: 1,
+                flexBasis: "calc(50% - 0.75rem)", // two per row with spacing
+                "@media (max-width: 400px)": {
+                  flexBasis: "100%", // one per row on small screens
+                },
               },
             }}
           >
@@ -128,8 +132,7 @@ const OrderCard = ({ order, onView, onEdit, onDelete }) => {
                   px: 1.5,
                   height: 30,
                   borderRadius: 1,
-                  gridColumn: "1 / span 2", // spans full width
-                  justifySelf: "start",
+                  flexBasis: "100%", // always full width
                 }}
               />
             )}
