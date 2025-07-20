@@ -39,17 +39,21 @@ export const createOrder = asyncHandler(async (req, res) => {
         sellerFeedbackStatus,
         sellerFeedbackScreenshot,
         refundStatus,
-        refundAmount,
         refundFormSubmittedAt,
         refundReceivedAt,
         refundProof,
         notes
     } = req.body;
 
+
     const existingOrder = await Order.findOne({ 'product.orderId': productOrderId });
     if (existingOrder) {
         throw new ApiError(409, "Order with this ID already exists.");
     }
+    // Calculate refund amount
+    const price = Number(req.body.productPrice);
+    const less = Number(req.body.productLess);
+    const refundAmount = isNaN(price) || isNaN(less) ? order.refund.amount : price - less;
 
     const newOrder = await Order.create({
         user: req.user._id,
@@ -60,7 +64,7 @@ export const createOrder = asyncHandler(async (req, res) => {
             orderId: productOrderId,
             displayName: productDisplayName,
             originalName: productOriginalName,
-            accountInfo :productAccountInfo,
+            accountInfo: productAccountInfo,
             link: productLink,
             platform: productPlatform,
             condition: productCondition,
@@ -215,6 +219,16 @@ export const updateOrder = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Order not found or access denied");
     }
 
+    let updateRefundAmount = false;
+    let refundAmount = order.refund.amount;
+
+    if (req.body.productPrice !== undefined || req.body.productLess !== undefined) {
+        const price = Number(req.body.productPrice);
+        const less = Number(req.body.productLess);
+        refundAmount = isNaN(price) || isNaN(less) ? order.refund.amount : price - less;
+        updateRefundAmount = true;
+    }
+
     // 🛠 Map request body to nested order structure
     const updates = {
         'feedback.type': req.body.feedbackType,
@@ -247,7 +261,7 @@ export const updateOrder = asyncHandler(async (req, res) => {
         'sellerFeedback.screenshot': req.body.sellerFeedbackScreenshot,
 
         'refund.status': req.body.refundStatus,
-        'refund.amount': req.body.refundAmount,
+        'refund.amount': updateRefundAmount ? refundAmount : order.refund.amount,
         'refund.formSubmittedAt': req.body.refundFormDate,
         'refund.receivedAt': req.body.refundReceivedDate,
         'refund.proof': req.body.refundProof,
