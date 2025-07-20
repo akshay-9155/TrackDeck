@@ -44,6 +44,10 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             <strong>Original Name:</strong> {product.originalName}
           </Typography>
           <Typography>
+            <strong>Account Used for Purchase: </strong>{" "}
+            {product.accountInfo}
+          </Typography>
+          <Typography>
             <strong>Platform:</strong> {product.platform}
           </Typography>
           <Typography>
@@ -82,7 +86,7 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             <strong>Order Placed:</strong> {formatDate(timeline.orderPlacedAt)}
           </Typography>
           <Typography>
-            <strong>Form Submitted:</strong>{" "}
+            <strong>Order Form Submitted:</strong>{" "}
             {formatDate(timeline.formSubmittedAt)}
           </Typography>
           <Typography>
