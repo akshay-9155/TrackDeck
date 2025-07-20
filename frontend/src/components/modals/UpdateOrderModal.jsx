@@ -358,14 +358,6 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
-                label="Refund Amount"
-                type="number"
-                fullWidth
-                {...register("refundAmount")}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
                 label="Refund Form Date"
                 type="date"
                 fullWidth
