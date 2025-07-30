@@ -39,7 +39,7 @@ const features = [
 const Home = () => {
   const navigate = useNavigate();
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   return (
     <Box
@@ -97,7 +97,15 @@ const Home = () => {
           <Button
             variant="contained"
             size="large"
-            onClick={() => navigate("/signup")}
+            onClick={() => {
+              if (!isAuthenticated) {
+                navigate("/login");
+              } else if (user?.role === "admin") {
+                navigate("/admin/dashboard");
+              } else {
+                navigate("/user/dashboard");
+              }
+            }}
             component={motion.button}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
