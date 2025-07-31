@@ -75,7 +75,7 @@ const Login = () => {
             label="Email"
             fullWidth
             margin="normal"
-            defaultValue="akshay@example.com"
+            defaultValue={import.meta.env.VITE_USERNAME || ""}
             {...register("email", {
               required: "Email is required",
               pattern: {
@@ -116,7 +116,7 @@ const Login = () => {
             type={showPassword ? "text" : "password"}
             fullWidth
             margin="normal"
-            defaultValue="Akshay@123"
+            defaultValue={import.meta.env.VITE_PASSWORD || ""}
             {...register("password", {
               required: "Password is required",
               minLength: {
