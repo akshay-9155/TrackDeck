@@ -146,33 +146,6 @@ const ViewOrderModal = ({ open, onClose, order }) => {
                 <strong>Review Text:</strong> {review.text}
               </Typography>
             )}
-            {review?.screenshot && (
-              <Link
-                href={review.screenshot}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View Review Screenshot
-              </Link>
-            )}
-            {rating?.screenshot && (
-              <Link
-                href={rating.screenshot}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View Rating Screenshot
-              </Link>
-            )}
-            {sellerFeedback?.screenshot && (
-              <Link
-                href={sellerFeedback.screenshot}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View Seller Feedback Screenshot
-              </Link>
-            )}
           </Section>
 
           <Section icon={<MonetizationOnIcon color="error" />} title="Refund">
@@ -189,16 +162,97 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             <Typography>
               <strong>Refund Received:</strong> {formatDate(refund?.receivedAt)}
             </Typography>
-            {refund?.proof && (
-              <Link
-                href={refund.proof}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View Refund Proof
-              </Link>
-            )}
           </Section>
+
+          {(review?.screenshot ||
+            rating?.screenshot ||
+            sellerFeedback?.screenshot ||
+            refund?.proof) && (
+            <Paper elevation={2} sx={{ p: 2 }}>
+              <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+                <InfoIcon color="info" />
+                <Typography variant="h6">Images</Typography>
+              </Stack>
+
+              <Box
+                display="grid"
+                gridTemplateColumns={{ xs: "1fr", sm: "1fr 1fr" }}
+                gap={2}
+              >
+                {rating?.screenshot && (
+                  <Box>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Rating Screenshot
+                    </Typography>
+                    <Box
+                      component="img"
+                      src={rating.screenshot}
+                      alt="Rating Screenshot"
+                      sx={{
+                        width: "100%",
+                        borderRadius: 2,
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </Box>
+                )}
+
+                {review?.screenshot && (
+                  <Box>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Review Screenshot
+                    </Typography>
+                    <Box
+                      component="img"
+                      src={review.screenshot}
+                      alt="Review Screenshot"
+                      sx={{
+                        width: "100%",
+                        borderRadius: 2,
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </Box>
+                )}
+
+                {sellerFeedback?.screenshot && (
+                  <Box>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Seller Feedback Screenshot
+                    </Typography>
+                    <Box
+                      component="img"
+                      src={sellerFeedback.screenshot}
+                      alt="Seller Feedback Screenshot"
+                      sx={{
+                        width: "100%",
+                        borderRadius: 2,
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </Box>
+                )}
+
+                {refund?.proof && (
+                  <Box>
+                    <Typography variant="subtitle2" gutterBottom>
+                      Refund Proof
+                    </Typography>
+                    <Box
+                      component="img"
+                      src={refund.proof}
+                      alt="Refund Proof"
+                      sx={{
+                        width: "100%",
+                        borderRadius: 2,
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </Box>
+                )}
+              </Box>
+            </Paper>
+          )}
 
           <Section icon={<NoteAltIcon color="info" />} title="Notes">
             <Typography>{notes || "-"}</Typography>
