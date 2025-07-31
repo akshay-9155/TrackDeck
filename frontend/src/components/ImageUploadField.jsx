@@ -45,8 +45,8 @@ const ImageUploadField = forwardRef(
     const previewSrc = localFile ? URL.createObjectURL(localFile) : previewUrl;
 
     return (
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      <Box padding={2} bgcolor={"#e5e8f7ff"} borderRadius={2} sx={{ mb: 2 }}>
+        <Typography variant="subtitle2" fontWeight={600} sx={{ mb: 1 }}>
           {label}
         </Typography>
 

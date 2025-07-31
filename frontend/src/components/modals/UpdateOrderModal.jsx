@@ -397,51 +397,50 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
 
             {/* Image Upload */}
             {/* Rating Screenshot Upload */}
-            <Grid xs={12}>
-              <ImageUploadField
-                ref={ratingRef}
-                name="ratingScreenshot"
-                label="Rating Screenshot"
-                type="rating"
-                watch={watch}
-                setValue={setValue}
-              />
-            </Grid>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <ImageUploadField
+                  ref={ratingRef}
+                  name="ratingScreenshot"
+                  label="Rating Screenshot"
+                  type="rating"
+                  watch={watch}
+                  setValue={setValue}
+                />
+              </Grid>
 
-            {/* Review Screenshot Upload */}
-            <Grid xs={12}>
-              <ImageUploadField
-                ref={reviewRef}
-                name="reviewScreenshot"
-                label="Review Screenshot"
-                type="review"
-                watch={watch}
-                setValue={setValue}
-              />
-            </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <ImageUploadField
+                  ref={reviewRef}
+                  name="reviewScreenshot"
+                  label="Review Screenshot"
+                  type="review"
+                  watch={watch}
+                  setValue={setValue}
+                />
+              </Grid>
 
-            {/* Seller Feedback Screenshot */}
-            <Grid xs={12}>
-              <ImageUploadField
-                ref={sellerFeedbackRef}
-                name="sellerFeedbackScreenshot"
-                label="Seller Feedback Screenshot"
-                type="sellerfeedback"
-                watch={watch}
-                setValue={setValue}
-              />
-            </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <ImageUploadField
+                  ref={sellerFeedbackRef}
+                  name="sellerFeedbackScreenshot"
+                  label="Seller Feedback Screenshot"
+                  type="sellerfeedback"
+                  watch={watch}
+                  setValue={setValue}
+                />
+              </Grid>
 
-            {/* Refund Proof Screenshot */}
-            <Grid xs={12}>
-              <ImageUploadField
-                ref={refundProofRef}
-                name="refundProof"
-                label="Refund Proof"
-                type="refund"
-                watch={watch}
-                setValue={setValue}
-              />
+              <Grid size={{ xs: 12, md: 6 }}>
+                <ImageUploadField
+                  ref={refundProofRef}
+                  name="refundProof"
+                  label="Refund Proof"
+                  type="refund"
+                  watch={watch}
+                  setValue={setValue}
+                />
+              </Grid>
             </Grid>
 
             {/* Notes */}
