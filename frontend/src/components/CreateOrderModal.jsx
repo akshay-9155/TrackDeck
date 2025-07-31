@@ -13,6 +13,7 @@ import {
 import { useForm } from "react-hook-form";
 import useCreateOrder from "../hooks/useCreateOrder.js";
 import { cleanObject } from "../utils/helper.js";
+import { format } from "date-fns";
 
 const CreateOrderModal = ({ open, onClose, refresh }) => {
   const {
@@ -23,6 +24,8 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
   } = useForm();
 
   const { createOrder, loading } = useCreateOrder();
+
+  const nowIST = new Date();
 
   const onSubmit = async (data) => {
     const result = await createOrder(cleanObject(data));
@@ -123,7 +126,9 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               <TextField
                 label="Product Link"
                 fullWidth
-                {...register("productLink")}
+                {...register("productLink", {
+                  required: "Product link is required",
+                })}
                 error={!!errors.productLink}
                 helperText={errors.productLink?.message}
               />
@@ -247,8 +252,9 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             {/* Timeline */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
-                label="Order Placed"
-                type="date"
+                label="Order Date"
+                type="datetime-local"
+                defaultValue={format(nowIST, "yyyy-MM-dd'T'HH:mm")}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
                 {...register("orderPlacedAt")}
@@ -257,8 +263,9 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
 
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
-                label="Order Form Submitted"
-                type="date"
+                label="Order Form Submit Date"
+                type="datetime-local"
+                defaultValue={format(nowIST, "yyyy-MM-dd'T'HH:mm")}
                 InputLabelProps={{ shrink: true }}
                 fullWidth
                 {...register("formSubmittedAt")}
@@ -275,7 +282,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
               />
             </Grid>
 
-            <Grid size={{ xs: 12, sm: 6 }}>
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Is Delivered?"
                 select
@@ -286,10 +293,10 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 <MenuItem value={true}>Yes</MenuItem>
                 <MenuItem value={false}>No</MenuItem>
               </TextField>
-            </Grid>
+            </Grid> */}
 
             {/* Feedback Status */}
-            <Grid size={{ xs: 12, sm: 4 }}>
+            {/* <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 label="Review Status"
                 select
@@ -303,9 +310,9 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
+            </Grid> */}
 
-            <Grid size={{ xs: 12, sm: 4 }}>
+            {/* <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 label="Rating Status"
                 select
@@ -319,9 +326,9 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
+            </Grid> */}
 
-            <Grid size={{ xs: 12, sm: 4 }}>
+            {/* <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 label="Seller Feedback Status"
                 select
@@ -335,40 +342,40 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
+            </Grid> */}
 
             {/* Screenshots */}
-            <Grid size={{ xs: 12, sm: 6 }}>
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Review Text"
                 fullWidth
                 {...register("reviewText")}
               />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            </Grid> */}
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Review Screenshot URL"
                 fullWidth
                 {...register("reviewScreenshot")}
               />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            </Grid> */}
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Rating Screenshot URL"
                 fullWidth
                 {...register("ratingScreenshot")}
               />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            </Grid> */}
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Seller Feedback Screenshot"
                 fullWidth
                 {...register("sellerFeedbackScreenshot")}
               />
-            </Grid>
+            </Grid> */}
 
             {/* Refund */}
-            <Grid size={{ xs: 12, sm: 6 }}>
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Status"
                 select
@@ -382,9 +389,9 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
+            </Grid> */}
 
-            <Grid size={{ xs: 12, sm: 6 }}>
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Form Submitted At"
                 type="date"
@@ -392,8 +399,8 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 fullWidth
                 {...register("refundFormSubmittedAt")}
               />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            </Grid> */}
+            {/* <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Received At"
                 type="date"
@@ -401,14 +408,14 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
                 fullWidth
                 {...register("refundReceivedAt")}
               />
-            </Grid>
-            <Grid size={{ xs: 12 }}>
+            </Grid> */}
+            {/* <Grid size={{ xs: 12 }}>
               <TextField
                 label="Refund Proof URL"
                 fullWidth
                 {...register("refundProof")}
               />
-            </Grid>
+            </Grid> */}
 
             {/* Notes */}
             <Grid size={{ xs: 12 }}>

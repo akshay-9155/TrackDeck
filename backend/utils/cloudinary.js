@@ -12,7 +12,7 @@ const uploadOnCloudinary = async (localFilePath) => {
         if (!localFilePath) return null;
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: 'auto',
-            folder: "RoomSync"
+            folder: "TrackDeck"
         })
         fs.unlinkSync(localFilePath);
         // // console.log("File uploaded succesfully", response.url);

@@ -119,7 +119,7 @@ const OrderSchema = new mongoose.Schema({
         status: {
             type: String,
             enum: ['Pending', 'Completed', 'Not Required'],
-            default: 'Not Required'
+            default: 'Pending'
         },
         screenshot: {
             type: String,
