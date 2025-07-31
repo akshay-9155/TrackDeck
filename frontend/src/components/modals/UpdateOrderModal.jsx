@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -14,6 +14,7 @@ import {
 import { useForm } from "react-hook-form";
 import useUpdateOrder from "../../hooks/useUpdateOrder.js";
 import { cleanObject } from "../../utils/helper.js";
+import ImageUploadField from "../ImageUploadField.jsx";
 
 const statusOptions = ["Pending", "Completed", "Not Required"];
 const refundStatusOptions = ["Pending", "Received", "Rejected"];
@@ -35,6 +36,7 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm();
 
   const { updateOrder, loading } = useUpdateOrder();
@@ -82,16 +84,55 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
     }
   }, [order, reset]);
 
+  const ratingRef = useRef();
+  const reviewRef = useRef();
+  const sellerFeedbackRef = useRef();
+  const refundProofRef = useRef();
+
+
+  // const onSubmit = async (data) => {
+  //   setSubmitError(null);
+  //   const result = await updateOrder(order?._id, cleanObject(data));
+  //   if (result.success) {
+  //     refresh();
+  //     onClose();
+  //   } else {
+  //     setSubmitError(result.message);
+  //   }
+  // };
+
   const onSubmit = async (data) => {
     setSubmitError(null);
-    const result = await updateOrder(order?._id, cleanObject(data));
-    if (result.success) {
-      refresh();
-      onClose();
-    } else {
-      setSubmitError(result.message);
+
+    try {
+      // Upload images to Cloudinary (only if new file added)
+      const [ratingURL, reviewURL, sellerFeedbackURL, refundProofURL] =
+        await Promise.all([
+          ratingRef.current?.uploadIfNeeded(),
+          reviewRef.current?.uploadIfNeeded(),
+          sellerFeedbackRef.current?.uploadIfNeeded(),
+          refundProofRef.current?.uploadIfNeeded(),
+        ]);
+
+      // Set values in form (before calling API)
+      data.ratingScreenshot = ratingURL;
+      data.reviewScreenshot = reviewURL;
+      data.sellerFeedbackScreenshot = sellerFeedbackURL;
+      data.refundProof = refundProofURL;
+
+      const result = await updateOrder(order?._id, cleanObject(data));
+
+      if (result.success) {
+        refresh();
+        onClose();
+      } else {
+        setSubmitError(result.message);
+      }
+    } catch (err) {
+      setSubmitError("Image upload failed. Try again.");
     }
   };
+
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -355,32 +396,51 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
             </Grid>
 
             {/* Image Upload */}
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Rating Screenshot URL"
-                fullWidth
-                {...register("ratingScreenshot")}
+            {/* Rating Screenshot Upload */}
+            <Grid xs={12}>
+              <ImageUploadField
+                ref={ratingRef}
+                name="ratingScreenshot"
+                label="Rating Screenshot"
+                type="rating"
+                watch={watch}
+                setValue={setValue}
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Review Screenshot URL"
-                fullWidth
-                {...register("reviewScreenshot")}
+
+            {/* Review Screenshot Upload */}
+            <Grid xs={12}>
+              <ImageUploadField
+                ref={reviewRef}
+                name="reviewScreenshot"
+                label="Review Screenshot"
+                type="review"
+                watch={watch}
+                setValue={setValue}
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
+
+            {/* Seller Feedback Screenshot */}
+            <Grid xs={12}>
+              <ImageUploadField
+                ref={sellerFeedbackRef}
+                name="sellerFeedbackScreenshot"
                 label="Seller Feedback Screenshot"
-                fullWidth
-                {...register("sellerFeedbackScreenshot")}
+                type="sellerfeedback"
+                watch={watch}
+                setValue={setValue}
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Refund Proof URL"
-                fullWidth
-                {...register("refundProof")}
+
+            {/* Refund Proof Screenshot */}
+            <Grid xs={12}>
+              <ImageUploadField
+                ref={refundProofRef}
+                name="refundProof"
+                label="Refund Proof"
+                type="refund"
+                watch={watch}
+                setValue={setValue}
               />
             </Grid>
 

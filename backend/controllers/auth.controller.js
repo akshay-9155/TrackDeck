@@ -207,10 +207,10 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const allowedFolders = {
-    rating: "trackdeck/ratingScreenshot",
-    review: "trackdeck/reviewScreenshot",
-    sellerfeedback: "trackdeck/sellerfeedbackScreenshot",
-    refund: "trackdeck/refundproofScreenshot",
+    rating: "TrackDeck/ratingScreenshot",
+    review: "TrackDeck/reviewScreenshot",
+    sellerfeedback: "TrackDeck/sellerfeedbackScreenshot",
+    refund: "TrackDeck/refundproofScreenshot",
 };
 
 export const getSignature = asyncHandler( async (req, res) => {
