@@ -1,9 +1,10 @@
 // routes/auth.route.js
 
 import { Router } from "express";
-import { registerUser, loginUser, getCurrentUser, refreshAccessToken, logoutUser } from "../controllers/auth.controller.js";
+import { registerUser, loginUser, getCurrentUser, refreshAccessToken, logoutUser, getSignature } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { validateLogin, validateRegister } from "../middlewares/validations/authValidation.middleware.js";
+import { cloudinaryLimiter } from "../middlewares/cloudinaryLimiter.middleware.js";
 
 const authRouter = Router();
 
@@ -31,5 +32,10 @@ authRouter.get("/me", authenticate, getCurrentUser);
 // @desc    Refresh Access Token
 // @access  Private
 authRouter.post("/refreshAccessToken", refreshAccessToken);
+
+// @route   POST /api/auth/cloudinary/signature
+// @desc    get cloudinary signature
+// @access  Private
+authRouter.get("/cloudinary/signature", authenticate, cloudinaryLimiter, getSignature);
 
 export default authRouter;

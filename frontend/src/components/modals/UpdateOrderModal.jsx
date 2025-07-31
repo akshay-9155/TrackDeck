@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -284,13 +284,6 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 {...register("reviewText")}
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Review Screenshot URL"
-                fullWidth
-                {...register("reviewScreenshot")}
-              />
-            </Grid>
 
             {/* Rating */}
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -307,13 +300,6 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Rating Screenshot URL"
-                fullWidth
-                {...register("ratingScreenshot")}
-              />
             </Grid>
 
             {/* Seller Feedback */}
@@ -332,13 +318,6 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <TextField
-                label="Seller Feedback Screenshot"
-                fullWidth
-                {...register("sellerFeedbackScreenshot")}
-              />
-            </Grid>
 
             {/* Refund */}
             <Grid size={{ xs: 12, sm: 6 }}>
@@ -356,14 +335,6 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 ))}
               </TextField>
             </Grid>
-            {/* <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                label="Refund Amount"
-                type="number"
-                fullWidth
-                {...register("refundAmount")}
-              />
-            </Grid> */}
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label="Refund Form Date"
@@ -380,6 +351,29 @@ const UpdateOrderModal = ({ open, onClose, order, refresh }) => {
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 {...register("refundReceivedDate")}
+              />
+            </Grid>
+
+            {/* Image Upload */}
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Rating Screenshot URL"
+                fullWidth
+                {...register("ratingScreenshot")}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Review Screenshot URL"
+                fullWidth
+                {...register("reviewScreenshot")}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Seller Feedback Screenshot"
+                fullWidth
+                {...register("sellerFeedbackScreenshot")}
               />
             </Grid>
             <Grid size={{ xs: 12 }}>

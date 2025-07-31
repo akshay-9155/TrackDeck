@@ -7,6 +7,7 @@ import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/AsyncHandler.js";
 import { generateAccessAndRefreshTokens } from "../utils/helper.js";
 import jwt from 'jsonwebtoken';
+import { generateCloudinarySignature } from "../utils/cloudinary.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
     // Run express-validator result check
@@ -204,5 +205,27 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
         throw new ApiError(401, error?.message || "Invalid refresh token");
     }
 });
+
+const allowedFolders = {
+    rating: "trackdeck/ratingScreenshot",
+    review: "trackdeck/reviewScreenshot",
+    sellerfeedback: "trackdeck/sellerfeedbackScreenshot",
+    refund: "trackdeck/refundproofScreenshot",
+};
+
+export const getSignature = asyncHandler( async (req, res) => {
+    const { type } = req.query;
+
+    if (!type || !allowedFolders[type]) {
+        throw new ApiError(400, "Invalid or missing 'type' parameter.");
+    }
+
+    const folder = allowedFolders[type];
+    const signatureData = generateCloudinarySignature(folder);
+
+    return res.status(200).json(
+        new ApiResponse(200, signatureData, "Signature generated successfully.")
+    );
+})
 
 

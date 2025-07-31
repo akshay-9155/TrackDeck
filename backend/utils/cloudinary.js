@@ -25,8 +25,28 @@ const uploadOnCloudinary = async (localFilePath) => {
 
 }
 
+const generateCloudinarySignature = (folder) => {
+    const timestamp = Math.round(Date.now() / 1000);
+
+    const signature = cloudinary.utils.api_sign_request(
+        {
+            timestamp,
+            folder,
+        },
+        process.env.CLOUDINARY_API_SECRET
+    );
+
+    return {
+        signature,
+        timestamp,
+        folder,
+        apiKey: process.env.CLOUDINARY_API_KEY,
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    };
+};
+
 // cloudinary.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",
 //     { public_id: "olympic_flag" },
 //     function (error, result) { // console.log(result); });
 
-export { uploadOnCloudinary };
+export { uploadOnCloudinary, generateCloudinarySignature };
