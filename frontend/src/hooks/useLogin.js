@@ -1,8 +1,8 @@
 // src/hooks/useLogin.js
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import axiosInstance, { setAccessToken } from "../utils/axiosInstance";
-import { setUser } from "../features/authSlice";
+import axiosInstance from "../utils/axiosInstance";
+import { setAccessToken, setUser } from "../features/authSlice";
 import toast from "react-hot-toast";
 
 const useLogin = () => {
@@ -17,7 +17,7 @@ const useLogin = () => {
             const { user, accessToken } = response.data.data;
 
             // 🔐 Save access token in memory for Axios
-            setAccessToken(accessToken);
+            dispatch(setAccessToken(accessToken));
 
             // ✅ Update Redux store
             dispatch(setUser({ ...user, accessToken }));

@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import axiosInstance, { setAccessToken } from "../utils/axiosInstance.jsx";
+import axiosInstance from "../utils/axiosInstance.jsx";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { logoutUser, setUser } from "../features/authSlice.jsx";
+import { logoutUser, setAccessToken, setUser } from "../features/authSlice.jsx";
+import { clearOrders } from "../features/orderSlice.jsx";
+import { setUserProfile } from "../features/userSlice.jsx";
 
 const useLogout = () => {
     const [loading, setLoading] = useState(false);
@@ -17,8 +19,10 @@ const useLogout = () => {
         try {
             const res = await axiosInstance.post("/auth/logout",{}, {withCredentials: true});
             // Clear token in memory
-            setAccessToken(null);
+            dispatch(setAccessToken(null));
             dispatch(setUser(null));
+            dispatch(clearOrders());
+            dispatch(setUserProfile(null));
 
             // Clear user from Redux
             

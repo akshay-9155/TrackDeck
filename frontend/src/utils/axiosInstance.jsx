@@ -3,21 +3,25 @@ import axios from "axios";
 import store from "../store";
 import { logoutUser, setUser } from "../features/authSlice";
 
-let accessToken = null;
-
-// ✅ Setter to allow updating token from useLogin etc.
-export const setAccessToken = (token) => {
-  accessToken = token;
-};
-
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1",
   withCredentials: true,
 });
 
+// helper to read accessToken from redux store safely
+const getAccessTokenFromStore = () => {
+  try {
+    const state = store.getState();
+    return state?.auth?.user?.accessToken ?? null;
+  } catch (e) {
+    return null;
+  }
+};
+
 // ✅ Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
+    const accessToken = getAccessTokenFromStore();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -53,8 +57,7 @@ axiosInstance.interceptors.response.use(
         const res = await axiosInstance.post("/auth/refreshAccessToken");
         const newAccessToken = res.data?.data?.accessToken;
 
-        // ✅ update accessToken in memory and Redux
-        setAccessToken(newAccessToken);
+        // ✅ update accessToken in Redux
         store.dispatch(
           setUser({
             ...store.getState().auth.user,
