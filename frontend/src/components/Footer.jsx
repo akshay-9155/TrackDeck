@@ -1,4 +1,5 @@
 import { Box, Container, Typography, Link, Stack } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -15,6 +16,7 @@ const Footer = () => {
         textAlign: "center",
         zIndex: 1000,
         boxShadow: "0 -4px 12px rgba(0, 0, 0, 0.3)",
+        fontFamily: "Inter, sans-serif",
         "&::before": {
           content: '""',
           position: "absolute",
@@ -45,16 +47,37 @@ const Footer = () => {
               "& strong": { color: "#e0e7ff", fontWeight: 700 },
             }}
           >
-            © {new Date().getFullYear()} <strong>TrackDeck</strong>. All rights
-            reserved.
+            © {new Date().getFullYear()}{" "}
+            <Link
+              component={RouterLink}
+              to="/"
+              underline="hover"
+              color="#93c5fd"
+              fontSize="14px"
+              letterSpacing="1px"
+              fontWeight="600"
+              sx={{
+                transition: "color 0.3s ease",
+                "&:hover": {
+                  color: "#bfdbfe",
+                  textShadow: "0 0 5px rgba(147, 197, 253, 0.5)",
+                },
+              }}
+            >
+              TrackDeck
+            </Link>
+            . All rights reserved.
           </Typography>
 
           <Stack direction="row" spacing={4}>
             <Link
-              href="/about"
+              component={RouterLink}
+              to="/about"
               underline="hover"
               color="#93c5fd"
               fontSize="14px"
+              textTransform="uppercase"
+              letterSpacing="1px"
               sx={{
                 transition: "color 0.3s ease",
                 "&:hover": {
@@ -66,10 +89,13 @@ const Footer = () => {
               About
             </Link>
             <Link
-              href="/terms"
+              component={RouterLink}
+              to="/terms"
               underline="hover"
               color="#93c5fd"
               fontSize="14px"
+              textTransform="uppercase"
+              letterSpacing="1px"
               sx={{
                 transition: "color 0.3s ease",
                 "&:hover": {
@@ -81,12 +107,15 @@ const Footer = () => {
               Terms
             </Link>
             <Link
-              href="https://github.com"
+              component={RouterLink}
+              to="https://github.com"
               target="_blank"
               rel="noopener"
               underline="hover"
               color="#93c5fd"
               fontSize="14px"
+              textTransform="uppercase"
+              letterSpacing="1px"
               sx={{
                 transition: "color 0.3s ease",
                 "&:hover": {

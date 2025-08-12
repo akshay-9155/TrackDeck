@@ -52,7 +52,6 @@ const ViewOrderModal = ({ open, onClose, order }) => {
     refund,
     notes,
   } = order;
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>Order Details</DialogTitle>
@@ -67,6 +66,9 @@ const ViewOrderModal = ({ open, onClose, order }) => {
             </Typography>
             <Typography>
               <strong>Original Name:</strong> {product.originalName}
+            </Typography>
+            <Typography>
+              <strong>Order Id:</strong> {product.orderId}
             </Typography>
             <Typography>
               <strong>Account Used:</strong> {product.accountInfo}
