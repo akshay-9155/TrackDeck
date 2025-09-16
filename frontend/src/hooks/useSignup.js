@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import axiosInstance from "../utils/axiosInstance";
-import { setUser } from "../features/authSlice";
+import { setAccessToken, setUser } from "../features/authSlice";
 import toast from "react-hot-toast";
 
 const useSignup = () => {
@@ -13,7 +13,6 @@ const useSignup = () => {
         setLoading(true);
         try {
             const response = await axiosInstance.post("/auth/register", formData);
-
             const { user, accessToken } = response.data.data;
 
             dispatch(setAccessToken(accessToken));

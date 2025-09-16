@@ -55,7 +55,9 @@ axiosInstance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const res = await axiosInstance.post("/auth/refreshAccessToken");
+        console.log(res);
         const newAccessToken = res.data?.data?.accessToken;
+        console.log("New AccessToken: ", newAccessToken);
 
         // ✅ update accessToken in Redux
         store.dispatch(
