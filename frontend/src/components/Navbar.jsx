@@ -17,6 +17,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import useLogout from "../hooks/useLogout";
+import AccountMenu from "./AccountMenu";
 
 const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
@@ -110,18 +111,19 @@ const Navbar = () => {
             ))}
 
             {user ? (
-              <IconButton
-                onClick={logout}
-                disabled={loading}
-                title="Logout"
-                sx={{
-                  color: "#f87171",
-                  "&:hover": { color: "#ef4444", transform: "scale(1.1)" },
-                  "&:disabled": { color: "#9ca3af" },
-                }}
-              >
-                <LogoutIcon />
-              </IconButton>
+              // <IconButton
+              //   onClick={logout}
+              //   disabled={loading}
+              //   title="Logout"
+              //   sx={{
+              //     color: "#f87171",
+              //     "&:hover": { color: "#ef4444", transform: "scale(1.1)" },
+              //     "&:disabled": { color: "#9ca3af" },
+              //   }}
+              // >
+              //   <LogoutIcon />
+              // </IconButton>
+              <AccountMenu handleLogoutClick={logout} handleChangePasswordClick={() => navigate("/change-password")} />
             ) : (
               <>
                 <Button

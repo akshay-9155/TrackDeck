@@ -14,6 +14,7 @@ import Terms from "../pages/Terms";
 import UserDashboard from "../pages/UserDashboard";
 import ScrollToTop from "../components/ScrollToTop";
 import RequireAuth from "./RequireAuth";
+import ChangePassword from "../pages/ChangePassword";
 
 const AppRoutes = () => {
   return (
@@ -46,6 +47,7 @@ const AppRoutes = () => {
 
           <Route element={<RequireAuth allowedRoles={["user"]} />}>
             <Route path="/user/dashboard" element={<UserDashboard />} />
+            <Route path="/change-password" element={<ChangePassword />} />
           </Route>
 
           {/* Under Development */}
