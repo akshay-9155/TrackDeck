@@ -1,9 +1,9 @@
 // routes/auth.route.js
 
 import { Router } from "express";
-import { registerUser, loginUser, getCurrentUser, refreshAccessToken, logoutUser, getSignature } from "../controllers/auth.controller.js";
+import { registerUser, loginUser, getCurrentUser, refreshAccessToken, logoutUser, getSignature, changePassword } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
-import { validateLogin, validateRegister } from "../middlewares/validations/authValidation.middleware.js";
+import { validateChangePassword, validateLogin, validateRegister } from "../middlewares/validations/authValidation.middleware.js";
 import { cloudinaryLimiter } from "../middlewares/cloudinaryLimiter.middleware.js";
 
 const authRouter = Router();
@@ -22,6 +22,11 @@ authRouter.post("/login", validateLogin, loginUser);
 // @desc    logout user, clear cookies and set refresh token to undefined in db
 // @access  Private
 authRouter.post("/logout", authenticate, logoutUser);
+
+// @route   POST /api/auth/changepassword
+// @desc    Change password
+// @access  Private
+authRouter.post("/changepassword", authenticate, validateChangePassword, changePassword);
 
 // @route   GET /api/auth/me
 // @desc    Get current logged-in user profile

@@ -206,6 +206,35 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 });
 
+export const changePassword = asyncHandler(async (req, res) => {
+    // Run express-validator result check
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        throw new ApiError(422, errors.array()[0].msg);
+    }
+    const userId = req.user._id;
+    const {currentPassword, newPassword} = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    // 🔐 Validate current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+        throw new ApiError(401, "Current password is incorrect");
+    }
+
+    // ✅ Update password
+    user.password = newPassword;
+    await user.save();
+
+    return res.status(200).json(
+        new ApiResponse(200, null, "Password updated successfully")
+    );
+})
+
 const allowedFolders = {
     rating: "TrackDeck/ratingScreenshot",
     review: "TrackDeck/reviewScreenshot",
