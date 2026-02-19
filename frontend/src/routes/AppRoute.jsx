@@ -15,6 +15,8 @@ import UserDashboard from "../pages/UserDashboard";
 import ScrollToTop from "../components/ScrollToTop";
 import RequireAuth from "./RequireAuth";
 import ChangePassword from "../pages/ChangePassword";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 const AppRoutes = () => {
   return (
@@ -37,6 +39,8 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/password-reset/:token" element={<ResetPassword />} />
           <Route path="/about" element={<About />} />
           <Route path="/terms" element={<Terms />} />
 

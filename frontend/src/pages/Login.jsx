@@ -198,6 +198,7 @@ const Login = () => {
             variant="body2"
             sx={{
               color: "#a0aec0",
+              textAlign: "left",
               "& a": {
                 color: "#e0e7ff",
                 textDecoration: "none",
@@ -208,7 +209,26 @@ const Login = () => {
               },
             }}
           >
-            Don&apos;t have an account? <Link to="/signup">Signup</Link>
+            <Link to="/forgot-password">Forgot Password?</Link>
+          </Typography>
+        </Box>
+
+        <Box mt={2} textAlign="center">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#a0aec0",
+              "& a": {
+                color: "#e0e7ff",
+                textDecoration: "none",
+                "&:hover": {
+                  textDecoration: "underline",
+                  color: "#ffffff",
+                },
+              },
+            }}
+          >
+            Don't have an account? <Link to="/signup">Signup</Link>
           </Typography>
         </Box>
       </Paper>
