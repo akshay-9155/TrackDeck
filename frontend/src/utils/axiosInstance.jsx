@@ -51,7 +51,6 @@ const skipRefreshRoutes = [
   "/auth/forgot-password",
   "/auth/verify-email",
   "/auth/refreshAccessToken",
-  "/auth/logout",
 ];
 
 axiosInstance.interceptors.response.use(
