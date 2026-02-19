@@ -1,7 +1,7 @@
 // routes/auth.route.js
 
 import { Router } from "express";
-import { registerUser, loginUser, getCurrentUser, refreshAccessToken, logoutUser, getSignature, changePassword } from "../controllers/auth.controller.js";
+import { registerUser, loginUser, getCurrentUser, refreshAccessToken, logoutUser, getSignature, changePassword, forgotPassword, resetPassword } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { validateChangePassword, validateLogin, validateRegister } from "../middlewares/validations/authValidation.middleware.js";
 import { cloudinaryLimiter } from "../middlewares/cloudinaryLimiter.middleware.js";
@@ -27,6 +27,16 @@ authRouter.post("/logout", authenticate, logoutUser);
 // @desc    Change password
 // @access  Private
 authRouter.post("/changepassword", authenticate, validateChangePassword, changePassword);
+
+// @route   POST /api/auth/forgotpassword
+// @desc    Forgot password
+// @access  Public
+authRouter.post("/forgotpassword", forgotPassword);
+
+// @route   POST /api/auth/resetpassword/:token
+// @desc    Reset password
+// @access  Public
+authRouter.post("/resetpassword/:token", resetPassword);
 
 // @route   GET /api/auth/me
 // @desc    Get current logged-in user profile

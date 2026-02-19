@@ -6,255 +6,356 @@ import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/AsyncHandler.js";
 import { generateAccessAndRefreshTokens } from "../utils/helper.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { generateCloudinarySignature } from "../utils/cloudinary.js";
+import {
+  forgetPasswordEmailTemplate,
+  sendEmail,
+} from "../utils/emailHelper.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
-    // Run express-validator result check
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        throw new ApiError(422, errors.array()[0].msg);
-    }
+  // Run express-validator result check
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(422, errors.array()[0].msg);
+  }
 
-    const { name, email, password, phoneNumber, gender } = req.body;
+  const { name, email, password, phoneNumber, gender } = req.body;
 
-    // Check for existing user
-    const existingUser = await User.findOne({
-        $or: [{ email }, { phoneNumber }]
-    });
+  // Check for existing user
+  const existingUser = await User.findOne({
+    $or: [{ email }, { phoneNumber }],
+  });
 
-    if (existingUser) {
-        throw new ApiError(409, "User already exists with this email or phone number");
-    }
-    const role = "user";
-    // Create new user
-    const newUser = await User.create({
-        name,
-        email,
-        password,
-        phoneNumber,
-        gender,
-        role
-    });
+  if (existingUser) {
+    throw new ApiError(
+      409,
+      "User already exists with this email or phone number",
+    );
+  }
+  const role = "user";
+  // Create new user
+  const newUser = await User.create({
+    name,
+    email,
+    password,
+    phoneNumber,
+    gender,
+    role,
+  });
 
-    // Generate tokens
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(newUser._id);
+  // Generate tokens
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    newUser._id,
+  );
 
-    // Save refreshToken in user (optional if needed later for token rotation)
-    newUser.refreshToken = refreshToken;
-    await newUser.save({ validateBeforeSave: false });
+  // Save refreshToken in user (optional if needed later for token rotation)
+  newUser.refreshToken = refreshToken;
+  await newUser.save({ validateBeforeSave: false });
 
-    const userData = {
-        _id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
-        gender: newUser.gender,
-        phoneNumber: newUser.phoneNumber
-    };
+  const userData = {
+    _id: newUser._id,
+    name: newUser.name,
+    email: newUser.email,
+    role: newUser.role,
+    gender: newUser.gender,
+    phoneNumber: newUser.phoneNumber,
+  };
 
-    const options = {
-        httpOnly: true,
-        secure: true,
-        sameSite: "Strict"
-    };
+  const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+  };
 
-    return res
-        .status(201)
-        .cookie("refreshToken", refreshToken, options)
-        .json(new ApiResponse(201, {
-            user: userData,
-            accessToken
-        }, "User registered successfully"));
+  return res
+    .status(201)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        201,
+        {
+          user: userData,
+          accessToken,
+        },
+        "User registered successfully",
+      ),
+    );
 });
 
 export const loginUser = asyncHandler(async (req, res) => {
-    // Run express-validator result check
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        throw new ApiError(422, errors.array()[0].msg);
-    }
+  // Run express-validator result check
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(422, errors.array()[0].msg);
+  }
 
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    // Find user
-    const user = await User.findOne({ email });
-    if (!user) {
-        throw new ApiError(401, "Invalid email or password");
-    }
+  // Find user
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(401, "Invalid email or password");
+  }
 
-    // Verify password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-        throw new ApiError(401, "Invalid email or password");
-    }
+  // Verify password
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    throw new ApiError(401, "Invalid email or password");
+  }
 
-    // Generate access & refresh tokens
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+  // Generate access & refresh tokens
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user._id,
+  );
 
-    // Save new refreshToken in DB
-    user.refreshToken = refreshToken;
-    await user.save({ validateBeforeSave: false });
+  // Save new refreshToken in DB
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
 
-    const userData = {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        gender: user.gender,
-        role: user.role
-    };
+  const userData = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    phoneNumber: user.phoneNumber,
+    gender: user.gender,
+    role: user.role,
+  };
 
-    const cookieOptions = {
-        httpOnly: true,
-        secure: true,        // enable for HTTPS
-        sameSite: 'Strict'   // or 'None' for cross-site with secure=true
-    };
+  const cookieOptions = {
+    httpOnly: true,
+    secure: true, // enable for HTTPS
+    sameSite: "Strict", // or 'None' for cross-site with secure=true
+  };
 
-    // Send response
-    return res
-        .status(200)
-        .cookie('refreshToken', refreshToken, cookieOptions)
-        .json(new ApiResponse(200, {
-            user: userData,
-            accessToken
-        }, 'Login successful'));
+  // Send response
+  return res
+    .status(200)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: userData,
+          accessToken,
+        },
+        "Login successful",
+      ),
+    );
 });
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
-    const user = req.user;
+  const user = req.user;
 
-    // No need to query DB again since middleware already validated user and stripped sensitive info
-    return res
-        .status(200)
-        .json(new ApiResponse(200, user, "User fetched successfully"));
+  // No need to query DB again since middleware already validated user and stripped sensitive info
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User fetched successfully"));
 });
 
 export const logoutUser = asyncHandler(async (req, res) => {
-    // Ensure user is present in request (added by auth middleware)
-    if (!req.user || !req.user._id) {
-        throw new ApiError(401, "Unauthorized");
-    }
+  // Ensure user is present in request (added by auth middleware)
+  if (!req.user || !req.user._id) {
+    throw new ApiError(401, "Unauthorized");
+  }
 
-    // Remove refreshToken from DB
-    await User.findByIdAndUpdate(
-        req.user._id,
-        { $unset: { refreshToken: "" } }, // More semantic than $set: undefined
-        { new: true }
-    );
+  // Remove refreshToken from DB
+  await User.findByIdAndUpdate(
+    req.user._id,
+    { $unset: { refreshToken: "" } }, // More semantic than $set: undefined
+    { new: true },
+  );
 
-    // Clear cookie options
-    const options = {
-        httpOnly: true,
-        secure: true,
-        sameSite: "Strict"
-    };
+  // Clear cookie options
+  const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+  };
 
-    // Clear cookie and send response
-    return res
-        .status(200)
-        .clearCookie("refreshToken", options)
-        .json(new ApiResponse(200, {}, "User logged out successfully"));
+  // Clear cookie and send response
+  return res
+    .status(200)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
 
 export const refreshAccessToken = asyncHandler(async (req, res) => {
-    const incomingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+  const incomingRefreshToken =
+    req.cookies?.refreshToken || req.body?.refreshToken;
 
-    if (!incomingRefreshToken) {
-        throw new ApiError(401, "Unauthorized access. Refresh token missing.");
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Unauthorized access. Refresh token missing.");
+  }
+
+  try {
+    // Decode the token
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+    );
+
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) {
+      throw new ApiError(401, "Invalid refresh token — user not found.");
     }
 
-    try {
-        // Decode the token
-        const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
-
-        const user = await User.findById(decodedToken?._id);
-
-        if (!user) {
-            throw new ApiError(401, "Invalid refresh token — user not found.");
-        }
-
-        // Check if token matches the one in DB
-        if (user.refreshToken !== incomingRefreshToken) {
-            throw new ApiError(401, "Refresh token has expired or is already used.");
-        }
-
-        // Generate new tokens
-        const {
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken
-        } = await generateAccessAndRefreshTokens(user._id);
-
-        // Save new refresh token in DB (rotating)
-        user.refreshToken = newRefreshToken;
-        await user.save({ validateBeforeSave: false });
-
-        // Set secure HTTP-only cookie
-        const cookieOptions = {
-            httpOnly: true,
-            secure: true,
-            sameSite: "Strict"
-        };
-
-        return res
-            .status(200)
-            .cookie("refreshToken", newRefreshToken, cookieOptions)
-            .json(new ApiResponse(200, { accessToken: newAccessToken }, "Access token refreshed"));
-
-    } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid refresh token");
+    // Check if token matches the one in DB
+    if (user.refreshToken !== incomingRefreshToken) {
+      throw new ApiError(401, "Refresh token has expired or is already used.");
     }
+
+    // Generate new tokens
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      await generateAccessAndRefreshTokens(user._id);
+
+    // Save new refresh token in DB (rotating)
+    user.refreshToken = newRefreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    // Set secure HTTP-only cookie
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    };
+
+    return res
+      .status(200)
+      .cookie("refreshToken", newRefreshToken, cookieOptions)
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken: newAccessToken },
+          "Access token refreshed",
+        ),
+      );
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid refresh token");
+  }
 });
 
 export const changePassword = asyncHandler(async (req, res) => {
-    // Run express-validator result check
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        throw new ApiError(422, errors.array()[0].msg);
-    }
-    const userId = req.user._id;
-    const {currentPassword, newPassword} = req.body;
+  // Run express-validator result check
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(422, errors.array()[0].msg);
+  }
+  const userId = req.user._id;
+  const { currentPassword, newPassword } = req.body;
 
-    const user = await User.findById(userId);
-    if (!user) {
-        throw new ApiError(404, "User not found");
-    }
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
 
-    // 🔐 Validate current password
-    const isMatch = await user.comparePassword(currentPassword);
-    if (!isMatch) {
-        throw new ApiError(401, "Current password is incorrect");
-    }
+  // 🔐 Validate current password
+  const isMatch = await user.comparePassword(currentPassword);
+  if (!isMatch) {
+    throw new ApiError(401, "Current password is incorrect");
+  }
 
-    // ✅ Update password
-    user.password = newPassword;
-    await user.save();
+  // ✅ Update password
+  user.password = newPassword;
+  await user.save();
 
-    return res.status(200).json(
-        new ApiResponse(200, null, "Password updated successfully")
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Password updated successfully"));
+});
+
+export const forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          null,
+          "If the email exists, a reset link has been sent",
+        ),
+      );
+  }
+  const token = await user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+  const resetUrl = `${process.env.CORS_ORIGIN}/password-reset/${token}`;
+  const emailTemplate = forgetPasswordEmailTemplate(resetUrl, user.name);
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: "Your password reset link (valid for 10 min)",
+      html: emailTemplate,
+      text: null,
+    });
+    return res
+      .status(200)
+      .json(new ApiResponse(200, null, "Token sent to email"));
+  } catch (error) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    throw new ApiError(
+      500,
+      "There was an error sending the email. Try again later.",
     );
-})
+  }
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    throw new ApiError(400, "Passwords do not match");
+  }
+  if(!token){
+    throw new ApiError(400, "Token is missing");
+  }
+  if(password.length < 6){
+    throw new ApiError(400, "Password must be at least 6 characters long");
+  }
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  if (!user) {
+    throw new ApiError(400, "Token is invalid or has expired");
+  }
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  user.refreshToken = undefined;
+  await user.save();
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Password reset successfully"));
+});
 
 const allowedFolders = {
-    rating: "TrackDeck/ratingScreenshot",
-    review: "TrackDeck/reviewScreenshot",
-    sellerfeedback: "TrackDeck/sellerfeedbackScreenshot",
-    refund: "TrackDeck/refundproofScreenshot",
+  rating: "TrackDeck/ratingScreenshot",
+  review: "TrackDeck/reviewScreenshot",
+  sellerfeedback: "TrackDeck/sellerfeedbackScreenshot",
+  refund: "TrackDeck/refundproofScreenshot",
 };
 
-export const getSignature = asyncHandler( async (req, res) => {
-    const { type } = req.query;
+export const getSignature = asyncHandler(async (req, res) => {
+  const { type } = req.query;
 
-    if (!type || !allowedFolders[type]) {
-        throw new ApiError(400, "Invalid or missing 'type' parameter.");
-    }
+  if (!type || !allowedFolders[type]) {
+    throw new ApiError(400, "Invalid or missing 'type' parameter.");
+  }
 
-    const folder = allowedFolders[type];
-    const signatureData = generateCloudinarySignature(folder);
+  const folder = allowedFolders[type];
+  const signatureData = generateCloudinarySignature(folder);
 
-    return res.status(200).json(
-        new ApiResponse(200, signatureData, "Signature generated successfully.")
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, signatureData, "Signature generated successfully."),
     );
-})
-
-
+});
