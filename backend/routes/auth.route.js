@@ -16,7 +16,7 @@ authRouter.post("/register", validateRegister, registerUser);
 // @route   POST /api/auth/register/verifyemail/:token
 // @desc    Verify email
 // @access  Public
-authRouter.post("/register/verifyemail/:token", verifyEmail);
+authRouter.get("/register/verifyemail/:token", verifyEmail);
 
 // @route   POST /api/auth/login
 // @desc    Login user and return token
