@@ -5,7 +5,7 @@ import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/AsyncHandler.js";
-import { generateAccessAndRefreshTokens } from "../utils/helper.js";
+import { createToken, generateAccessAndRefreshTokens } from "../utils/helper.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { generateCloudinarySignature } from "../utils/cloudinary.js";
@@ -13,6 +13,7 @@ import {
   forgetPasswordEmailTemplate,
   sendEmail,
 } from "../utils/emailHelper.js";
+import { Token } from "../models/token.model.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
   // Run express-validator result check
@@ -280,9 +281,13 @@ export const forgotPassword = asyncHandler(async (req, res) => {
         ),
       );
   }
-  const token = await user.createPasswordResetToken();
-  await user.save({ validateBeforeSave: false });
-  const resetUrl = `${process.env.CORS_ORIGIN}/password-reset/${token}`;
+
+  await Token.deleteMany({
+    userId: user._id,
+    type: "PASSWORD_RESET",
+  });
+  const rawToken = await createToken(user._id, "PASSWORD_RESET", 10);
+  const resetUrl = `${process.env.CORS_ORIGIN}/password-reset/${rawToken}`;
   const emailTemplate = forgetPasswordEmailTemplate(resetUrl, user.name);
   try {
     await sendEmail({
@@ -295,9 +300,10 @@ export const forgotPassword = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, null, "Token sent to email"));
   } catch (error) {
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
-    await user.save({ validateBeforeSave: false });
+    await Token.deleteMany({
+      userId: user._id,
+      type: "PASSWORD_RESET",
+    });
     throw new ApiError(
       500,
       "There was an error sending the email. Try again later.",
@@ -309,28 +315,42 @@ export const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { password, confirmPassword } = req.body;
 
+  if (!token) {
+    throw new ApiError(400, "Token is missing");
+  }
+
   if (password !== confirmPassword) {
     throw new ApiError(400, "Passwords do not match");
   }
-  if(!token){
-    throw new ApiError(400, "Token is missing");
-  }
-  if(password.length < 6){
-    throw new ApiError(400, "Password must be at least 6 characters long");
+
+  if (password.length < 6) {
+    throw new ApiError(
+      400,
+      "Password must be at least 6 characters long",
+    );
   }
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-  const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
+  const tokenDoc = await Token.findOne({
+    tokenHash: hashedToken,
+    type: "PASSWORD_RESET",
+    used: false,
+    expiresAt: { $gt: Date.now() },
   });
-  if (!user) {
+
+  if (!tokenDoc) {
     throw new ApiError(400, "Token is invalid or has expired");
   }
+
+  const user = await User.findById(tokenDoc.userId);
+
+  if (!user) {
+    throw new ApiError(400, "User not found");
+  }
   user.password = password;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
   user.refreshToken = undefined;
   await user.save();
+  tokenDoc.used = true;
+  await tokenDoc.save();
   return res
     .status(200)
     .json(new ApiResponse(200, null, "Password reset successfully"));

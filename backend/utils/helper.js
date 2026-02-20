@@ -1,5 +1,7 @@
+import { Token } from "../models/token.model.js";
 import { User } from "../models/user.model.js";
 import ApiError from "./ApiError.js";
+import crypto from "crypto";
 
 import mongoose from "mongoose";
 
@@ -20,4 +22,23 @@ export const generateAccessAndRefreshTokens = async (userId) => {
         throw new ApiError(500, "Someting went wrong while generating refresh and access token")
     }
 }
+
+export const createToken = async (userId, type, expiryMinutes) => {
+
+    const rawToken = crypto.randomBytes(32).toString("hex");
+
+    const tokenHash = crypto
+        .createHash("sha256")
+        .update(rawToken)
+        .digest("hex");
+
+    await Token.create({
+        userId,
+        type,
+        tokenHash,
+        expiresAt: Date.now() + expiryMinutes * 60 * 1000
+    });
+
+    return rawToken; // send this via email
+};
 

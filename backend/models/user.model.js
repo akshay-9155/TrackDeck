@@ -2,7 +2,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import crypto from "crypto";
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -41,15 +40,13 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
 
-    refreshToken: {
-        type: String
+    isEmailVerified: {
+        type: Boolean,
+        default: false
     },
 
-    passwordResetToken: {
+    refreshToken: {
         type: String
-    },
-    passwordResetExpires: {
-        type: Date
     },
 
     role: {
@@ -69,16 +66,6 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.methods.comparePassword = function (inputPassword) {
     return bcrypt.compare(inputPassword, this.password);
-};
-
-UserSchema.methods.createPasswordResetToken = function () {
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    this.passwordResetToken = crypto
-        .createHash('sha256')
-        .update(resetToken)
-        .digest('hex');
-    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-    return resetToken;
 };
 
 UserSchema.methods.generateAccessToken = function () {
