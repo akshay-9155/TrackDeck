@@ -5,12 +5,15 @@ import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/AsyncHandler.js";
-import { createToken, generateAccessAndRefreshTokens } from "../utils/helper.js";
+import {
+  createToken,
+  generateAccessAndRefreshTokens,
+} from "../utils/helper.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { generateCloudinarySignature } from "../utils/cloudinary.js";
 import {
-  forgetPasswordEmailTemplate,
+  generateEmailTemplate,
   sendEmail,
 } from "../utils/emailHelper.js";
 import { Token } from "../models/token.model.js";
@@ -29,7 +32,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     $or: [{ email }, { phoneNumber }],
   });
 
-  if (existingUser) {
+  if (existingUser && existingUser.isEmailVerified) {
     throw new ApiError(
       409,
       "User already exists with this email or phone number",
@@ -46,23 +49,73 @@ export const registerUser = asyncHandler(async (req, res) => {
     role,
   });
 
-  // Generate tokens
+  const rawToken = await createToken(newUser._id, "EMAIL_VERIFY", 60 * 24);
+
+  const verifyUrl = `${process.env.CORS_ORIGIN}/verify-email/${rawToken}`;
+
+  const emailTemplate = generateEmailTemplate({
+    linkUrl: verifyUrl,
+    name: name,
+    title: "Thank you for signing up.",
+    subtitle1: "Verify Your Email Address",
+    subtitle2: "Please click the button below to verify your email address.",
+    buttonText: "Verify Email",
+    warning: "If you did not create an account, you can safely ignore this email.",
+    instruction: "This verification link will expire in 24 hours.",
+  });
+
+  await sendEmail({
+    to: newUser.email,
+    subject: "Verify your email address",
+    html: emailTemplate,
+  });
+
+  return res
+    .status(201)
+    .json(
+      new ApiResponse(
+        201,
+        null,
+        "Registration successful. Please verify your email.",
+      ),
+    );
+});
+
+export const verifyEmail = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const tokenDoc = await Token.findOne({
+    tokenHash: hashedToken,
+    type: "EMAIL_VERIFY",
+    used: false,
+    expiresAt: { $gt: Date.now() },
+  });
+
+  if (!tokenDoc) {
+    throw new ApiError(400, "Token is invalid or expired");
+  }
+
+  const user = await User.findById(tokenDoc.userId);
+
+  if (!user) {
+    throw new ApiError(400, "User not found");
+  }
+
+  user.isEmailVerified = true;
+
+  // Generate tokens AFTER verification
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-    newUser._id,
+    user._id,
   );
 
-  // Save refreshToken in user (optional if needed later for token rotation)
-  newUser.refreshToken = refreshToken;
-  await newUser.save({ validateBeforeSave: false });
+  user.refreshToken = refreshToken;
 
-  const userData = {
-    _id: newUser._id,
-    name: newUser.name,
-    email: newUser.email,
-    role: newUser.role,
-    gender: newUser.gender,
-    phoneNumber: newUser.phoneNumber,
-  };
+  await user.save();
+
+  tokenDoc.used = true;
+  await tokenDoc.save();
 
   const options = {
     httpOnly: true,
@@ -71,16 +124,21 @@ export const registerUser = asyncHandler(async (req, res) => {
   };
 
   return res
-    .status(201)
+    .status(200)
     .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
-        201,
+        200,
         {
-          user: userData,
           accessToken,
+          user: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          },
         },
-        "User registered successfully",
+        "Email verified successfully",
       ),
     );
 });
@@ -98,6 +156,10 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     throw new ApiError(401, "Invalid email or password");
+  }
+
+  if (!user.isEmailVerified) {
+    throw new ApiError(401, "Please verify your email first");
   }
 
   // Verify password
@@ -288,7 +350,16 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   });
   const rawToken = await createToken(user._id, "PASSWORD_RESET", 10);
   const resetUrl = `${process.env.CORS_ORIGIN}/password-reset/${rawToken}`;
-  const emailTemplate = forgetPasswordEmailTemplate(resetUrl, user.name);
+  const emailTemplate = generateEmailTemplate({
+    linkUrl: resetUrl,
+    name: user.name,
+    title: "Forgot your Password?",
+    subtitle1: "We received a request to reset it.",
+    subtitle2: "Click the link below to reset your password.",
+    buttonText: "Reset Password",
+    warning: "If you didn’t request this, ignore this email.",
+    instruction: "This link expires in 10 minutes.",
+  });
   try {
     await sendEmail({
       to: user.email,
@@ -324,10 +395,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
   }
 
   if (password.length < 6) {
-    throw new ApiError(
-      400,
-      "Password must be at least 6 characters long",
-    );
+    throw new ApiError(400, "Password must be at least 6 characters long");
   }
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
   const tokenDoc = await Token.findOne({

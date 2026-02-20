@@ -1,5 +1,16 @@
 import nodemailer from "nodemailer";
-export const forgetPasswordEmailTemplate = (resetUrl, name) => {
+export const generateEmailTemplate = ({
+  linkUrl,
+  name,
+  title,
+  subtitle1,
+  subtitle2,
+  warning,
+  instruction,
+  buttonText = "Reset Password",
+  brandName = "Trackdeck",
+}) => {
+    const safe = (v) => v ?? "";
   return `
         <!doctype html>
         <html
@@ -250,7 +261,7 @@ export const forgetPasswordEmailTemplate = (resetUrl, name) => {
                                             style="margin: 0; word-break: break-word"
                                             >
                                             <span style="word-break: break-word"
-                                                >Your Reset Password Link</span
+                                                >${safe(title)}</span
                                             >
                                             </p>
                                         </div>
@@ -288,13 +299,12 @@ export const forgetPasswordEmailTemplate = (resetUrl, name) => {
                                             <p
                                             style="margin: 0; word-break: break-word"
                                             >
-                                            Hi ${name}, We received a request to reset your
-                                            password. Don’t worry,
+                                            Hi ${safe(name)}, ${safe(subtitle1)}
                                             </p>
                                             <p
                                             style="margin: 0; word-break: break-word"
                                             >
-                                            we are here to help you.
+                                            ${safe(subtitle2)}
                                             </p>
                                         </div>
                                         </td>
@@ -337,14 +347,14 @@ export const forgetPasswordEmailTemplate = (resetUrl, name) => {
                                                 letter-spacing: normal;
                                             "
                                             ><a
-                                                href="${resetUrl}"
+                                                href="${safe(linkUrl)}"
                                                 style="
                                                 word-break: break-word;
                                                 line-height: 32px;
                                                 color: #ffffff;
                                                 text-decoration: none;
                                                 "
-                                                >Reset Password</a
+                                                >${safe(buttonText)}</a
                                             ></span
                                             >
                                         </div>
@@ -436,14 +446,13 @@ export const forgetPasswordEmailTemplate = (resetUrl, name) => {
                                             style="margin: 0; word-break: break-word"
                                             >
                                             <strong
-                                                >Didn’t request a password
-                                                reset?</strong
+                                                >${safe(warning)}</strong
                                             >
                                             </p>
                                             <p
                                             style="margin: 0; word-break: break-word"
                                             >
-                                            You can safely ignore this message.
+                                            ${safe(instruction)}
                                             </p>
                                         </div>
                                         </td>
@@ -696,7 +705,7 @@ export const forgetPasswordEmailTemplate = (resetUrl, name) => {
                                             style="margin: 0; word-break: break-word"
                                             >
                                             <span style="word-break: break-word"
-                                                >Copyright © ${new Date().getFullYear()} Trackdeck, All rights
+                                                >Copyright © ${new Date().getFullYear()} ${safe(brandName)}, All rights
                                                 reserved.
                                             </p>
                                         </div>
