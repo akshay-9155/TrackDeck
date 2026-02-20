@@ -45,11 +45,13 @@ const Signup = () => {
       return;
     }
 
+    // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...formData } = data;
     const result = await signup(formData);
     if (result.success) {
-      toast.success("Signup successful");
-      navigate("/user/dashboard");
+      navigate("/verify-email-pending", {
+        state: { email: data.email },
+      });
     }
   };
 

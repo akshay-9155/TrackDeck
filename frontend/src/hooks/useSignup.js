@@ -1,34 +1,30 @@
 // src/hooks/useSignup.js
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import axiosInstance from "../utils/axiosInstance";
-import { setAccessToken, setUser } from "../features/authSlice";
 import toast from "react-hot-toast";
 
 const useSignup = () => {
-    const [loading, setLoading] = useState(false);
-    const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
-    const signup = async (formData) => {
-        setLoading(true);
-        try {
-            const response = await axiosInstance.post("/auth/register", formData);
-            const { user, accessToken } = response.data.data;
+  const signup = async (formData) => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.post("/auth/register", formData);
 
-            dispatch(setAccessToken(accessToken));
-            dispatch(setUser({ ...user, accessToken }));
+      toast.success(response.data.message || "Check your email to verify");
 
-            return { success: true };
-        } catch (error) {
-            const message = error.response?.data?.message || "Signup failed";
-            toast.error(message);
-            return { success: false };
-        } finally {
-            setLoading(false);
-        }
-    };
+      return { success: true };
+    } catch (error) {
+      const message =
+        error.response?.data?.message || "Signup failed";
+      toast.error(message);
+      return { success: false };
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return { signup, loading };
+  return { signup, loading };
 };
 
 export default useSignup;

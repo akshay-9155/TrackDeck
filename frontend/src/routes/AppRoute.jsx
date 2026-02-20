@@ -17,6 +17,8 @@ import RequireAuth from "./RequireAuth";
 import ChangePassword from "../pages/ChangePassword";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
+import VerifyEmail from "../pages/VerifyEmail";
+import VerifyEmailPending from "../pages/VerifyEmailPending";
 
 const AppRoutes = () => {
   return (
@@ -39,6 +41,8 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
+          <Route path="/verify-email-pending" element={<VerifyEmailPending />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/password-reset/:token" element={<ResetPassword />} />
           <Route path="/about" element={<About />} />
