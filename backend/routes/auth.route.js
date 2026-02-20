@@ -1,7 +1,7 @@
 // routes/auth.route.js
 
 import { Router } from "express";
-import { registerUser, loginUser, getCurrentUser, refreshAccessToken, logoutUser, getSignature, changePassword, forgotPassword, resetPassword } from "../controllers/auth.controller.js";
+import { registerUser, loginUser, getCurrentUser, refreshAccessToken, logoutUser, getSignature, changePassword, forgotPassword, resetPassword, verifyEmail } from "../controllers/auth.controller.js";
 import { authenticate } from "../middlewares/auth.middleware.js";
 import { validateChangePassword, validateLogin, validateRegister } from "../middlewares/validations/authValidation.middleware.js";
 import { cloudinaryLimiter } from "../middlewares/cloudinaryLimiter.middleware.js";
@@ -12,6 +12,11 @@ const authRouter = Router();
 // @desc    Register new user (Seeker or Owner)
 // @access  Public
 authRouter.post("/register", validateRegister, registerUser);
+
+// @route   POST /api/auth/register/verifyemail/:token
+// @desc    Verify email
+// @access  Public
+authRouter.post("/register/verifyemail/:token", verifyEmail);
 
 // @route   POST /api/auth/login
 // @desc    Login user and return token
