@@ -64,11 +64,17 @@ export const registerUser = asyncHandler(async (req, res) => {
     instruction: "This verification link will expire in 24 hours.",
   });
 
-  await sendEmail({
-    to: newUser.email,
-    subject: "Verify your email address",
-    html: emailTemplate,
-  });
+  try {
+    await sendEmail({
+      to: newUser.email,
+      subject: "Verify your email address",
+      html: emailTemplate,
+    });
+  } catch (error) {
+    await User.findByIdAndDelete(newUser._id);
+    await Token.deleteMany({ userId: newUser._id });
+    throw new ApiError(500, "Failed to send verification email");
+  }
 
   return res
     .status(201)
