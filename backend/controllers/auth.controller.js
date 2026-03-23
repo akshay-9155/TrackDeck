@@ -12,10 +12,7 @@ import {
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { generateCloudinarySignature } from "../utils/cloudinary.js";
-import {
-  generateEmailTemplate,
-  sendEmail,
-} from "../utils/emailHelper.js";
+import { generateEmailTemplate, sendEmail } from "../utils/emailHelper.js";
 import { Token } from "../models/token.model.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
@@ -26,17 +23,68 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 
   const { name, email, password, phoneNumber, gender } = req.body;
+  const existingEmailUser = await User.findOne({ email });
 
-  // Check for existing user
-  const existingUser = await User.findOne({
-    $or: [{ email }, { phoneNumber }],
-  });
+  if (existingEmailUser) {
+    if (existingEmailUser.isEmailVerified) {
+      throw new ApiError(
+        409,
+        "User already exists with this email or phone number",
+      );
+    }
 
-  if (existingUser && existingUser.isEmailVerified) {
-    throw new ApiError(
-      409,
-      "User already exists with this email or phone number",
+    const token = await Token.findOne({
+      userId: existingEmailUser._id,
+      type: "EMAIL_VERIFY",
+      used: false,
+      expiresAt: { $gt: Date.now() },
+    });
+
+    if (token) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            null,
+            "You already have an unexpired verification link. Please check your email to verify your email address.",
+          ),
+        );
+    }
+    const rawToken = await createToken(
+      existingEmailUser._id,
+      "EMAIL_VERIFY",
+      60 * 24,
     );
+
+    const verifyUrl = `${process.env.CORS_ORIGIN}/verify-email/${rawToken}`;
+
+    const emailTemplate = generateEmailTemplate({
+      linkUrl: verifyUrl,
+      name: existingEmailUser.name,
+      title: "Verify your email",
+      subtitle1: "Verify Your Email Address",
+      subtitle2: "Please click below to verify your email.",
+      buttonText: "Verify Email",
+      warning: "If you did not create an account, ignore this.",
+      instruction: "This link expires in 24 hours.",
+    });
+
+    await sendEmail({
+      to: existingEmailUser.email,
+      subject: "Verify your email address",
+      html: emailTemplate,
+    });
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          null,
+          "Verification email resent. Please check your inbox.",
+        ),
+      );
   }
   const role = "user";
   // Create new user
@@ -49,7 +97,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     role,
   });
 
-  const rawToken = await createToken(newUser._id, "EMAIL_VERIFY", 60 * 24);
+  const rawToken = await createToken(newUser._id, "EMAIL_VERIFY", 2);
 
   const verifyUrl = `${process.env.CORS_ORIGIN}/verify-email/${rawToken}`;
 
@@ -60,7 +108,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     subtitle1: "Verify Your Email Address",
     subtitle2: "Please click the button below to verify your email address.",
     buttonText: "Verify Email",
-    warning: "If you did not create an account, you can safely ignore this email.",
+    warning:
+      "If you did not create an account, you can safely ignore this email.",
     instruction: "This verification link will expire in 24 hours.",
   });
 
