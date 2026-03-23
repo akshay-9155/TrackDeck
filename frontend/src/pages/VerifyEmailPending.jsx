@@ -4,10 +4,10 @@ import React from 'react'
 const VerifyEmailPending = () => {
   return (
     <Container maxWidth="sm" sx={{ mt: 10, textAlign: "center" }}>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h5" gutterBottom color='#fff'>
         Check your email
       </Typography>
-      <Typography>
+      <Typography color='#fff'>
         We’ve sent a verification link to your email address.
       </Typography>
     </Container>
