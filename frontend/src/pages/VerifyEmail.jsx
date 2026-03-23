@@ -21,10 +21,10 @@ const VerifyEmail = () => {
       {loading ? (
         <>
           <CircularProgress />
-          <Typography mt={2}>Verifying your email...</Typography>
+          <Typography mt={2} color="#fff">Verifying your email...</Typography>
         </>
       ) : (
-        <Typography>Email verification complete.</Typography>
+        <Typography color="#fff">Email verification complete.</Typography>
       )}
     </Container>
   );
