@@ -777,6 +777,7 @@ export const sendEmail = async ({ to, subject, html, text }) => {
 
     return info;
   } catch (error) {
+    console.error("Error sending email:", error);
     console.error("Email sending failed:", error.message);
     throw new Error("Failed to send email");
   }
