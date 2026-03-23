@@ -10,7 +10,6 @@ const VerifyEmail = () => {
   const { verifyEmail, loading } = useVerifyEmail();
 
   useEffect(() => {
-    console.log(token);
     const response = verifyEmail(token);
     if (response.success) {
       navigate("/user/dashboard");
