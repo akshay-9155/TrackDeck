@@ -755,8 +755,10 @@ export const generateEmailTemplate = ({
 };
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
+  auth: { user: process.env.BREVO_SMTP_USER, pass: process.env.BREVO_SMTP_PASS },
 });
 
 export const sendEmail = async ({ to, subject, html, text }) => {
@@ -766,7 +768,7 @@ export const sendEmail = async ({ to, subject, html, text }) => {
 
   try {
     const info = await transporter.sendMail({
-      from: `"Trackdeck" <${process.env.SMTP_USER}>`,
+      from: `"Trackdeck" <${process.env.BREVO_SENDER_EMAIL}>`,
       to,
       subject,
       html,
