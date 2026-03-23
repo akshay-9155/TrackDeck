@@ -23,107 +23,19 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 
   const { name, email, password, phoneNumber, gender } = req.body;
-  const existingEmailUser = await User.findOne({ email });
+  const existingUser = await User.findOne({ email });
 
-  if (existingEmailUser) {
-    if (existingEmailUser.isEmailVerified) {
-      throw new ApiError(
-        409,
-        "User already exists with this email or phone number",
-      );
-    }
-
-    const token = await Token.findOne({
-      userId: existingEmailUser._id,
-      type: "EMAIL_VERIFY",
-      used: false,
-      expiresAt: { $gt: Date.now() },
-    });
-
-    if (token) {
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(
-            200,
-            null,
-            "You already have an unexpired verification link. Please check your email to verify your email address.",
-          ),
-        );
-    }
-    const rawToken = await createToken(
-      existingEmailUser._id,
-      "EMAIL_VERIFY",
-      60 * 24,
-    );
-
-    const verifyUrl = `${process.env.CORS_ORIGIN}/verify-email/${rawToken}`;
-
-    const emailTemplate = generateEmailTemplate({
-      linkUrl: verifyUrl,
-      name: existingEmailUser.name,
-      title: "Verify your email",
-      subtitle1: "Verify Your Email Address",
-      subtitle2: "Please click below to verify your email.",
-      buttonText: "Verify Email",
-      warning: "If you did not create an account, ignore this.",
-      instruction: "This link expires in 24 hours.",
-    });
-
-    await sendEmail({
-      to: existingEmailUser.email,
-      subject: "Verify your email address",
-      html: emailTemplate,
-    });
-
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          null,
-          "Verification email resent. Please check your inbox.",
-        ),
-      );
+  if (existingUser) {
+    return handleExistingUser(existingUser, res);
   }
-  const role = "user";
-  // Create new user
-  const newUser = await User.create({
+
+  await createAndVerifyUser({
     name,
     email,
     password,
     phoneNumber,
     gender,
-    role,
   });
-
-  const rawToken = await createToken(newUser._id, "EMAIL_VERIFY", 2);
-
-  const verifyUrl = `${process.env.CORS_ORIGIN}/verify-email/${rawToken}`;
-
-  const emailTemplate = generateEmailTemplate({
-    linkUrl: verifyUrl,
-    name: name,
-    title: "Thank you for signing up.",
-    subtitle1: "Verify Your Email Address",
-    subtitle2: "Please click the button below to verify your email address.",
-    buttonText: "Verify Email",
-    warning:
-      "If you did not create an account, you can safely ignore this email.",
-    instruction: "This verification link will expire in 24 hours.",
-  });
-
-  try {
-    await sendEmail({
-      to: newUser.email,
-      subject: "Verify your email address",
-      html: emailTemplate,
-    });
-  } catch (error) {
-    await User.findByIdAndDelete(newUser._id);
-    await Token.deleteMany({ userId: newUser._id });
-    throw new ApiError(500, "Failed to send verification email");
-  }
 
   return res
     .status(201)
@@ -135,6 +47,82 @@ export const registerUser = asyncHandler(async (req, res) => {
       ),
     );
 });
+
+const sendVerificationEmail = async (user, expiryMinutes = 60 * 24) => {
+  const rawToken = await createToken(user._id, "EMAIL_VERIFY", expiryMinutes);
+
+  const verifyUrl = `${process.env.CORS_ORIGIN}/verify-email/${rawToken}`;
+
+  const emailTemplate = generateEmailTemplate({
+    linkUrl: verifyUrl,
+    name: user.name,
+    title: "Verify your email",
+    subtitle1: "Verify Your Email Address",
+    subtitle2: "Please click below to verify your email.",
+    buttonText: "Verify Email",
+    warning: "If you did not create an account, ignore this.",
+    instruction: "This link expires in 24 hours.",
+  });
+
+  await sendEmail({
+    to: user.email,
+    subject: "Verify your email address",
+    html: emailTemplate,
+  });
+};
+
+const handleExistingUser = async (user, res) => {
+  if (user.isEmailVerified) {
+    throw new ApiError(
+      409,
+      "User already exists with this email or phone number",
+    );
+  }
+
+  const existingToken = await Token.findOne({
+    userId: user._id,
+    type: "EMAIL_VERIFY",
+    used: false,
+    expiresAt: { $gt: Date.now() },
+  });
+
+  if (existingToken) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          null,
+          "You already have an unexpired verification link. Please check your email.",
+        ),
+      );
+  }
+
+  await sendVerificationEmail(user);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        null,
+        "Verification email resent. Please check your inbox.",
+      ),
+    );
+};
+
+const createAndVerifyUser = async (userData) => {
+  const user = await User.create({ ...userData, role: "user" });
+
+  try {
+    await sendVerificationEmail(user);
+    return user;
+  } catch (error) {
+    await User.findByIdAndDelete(user._id);
+    await Token.deleteMany({ userId: user._id });
+    throw new ApiError(500, "Failed to send verification email");
+  }
+};
 
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
