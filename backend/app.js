@@ -15,6 +15,7 @@ app.use(express.json({
 
 app.use(cookieParser());
 
+import healthRouter from './routes/health.route.js';
 import authRouter from './routes/auth.route.js';
 import orderRouter from './routes/order.route.js';
 import userRouter from './routes/user.route.js';
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
     })
 });
 
+app.use("/api/v1/health", healthRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/user", userRouter);
