@@ -19,6 +19,13 @@ import authRouter from './routes/auth.route.js';
 import orderRouter from './routes/order.route.js';
 import userRouter from './routes/user.route.js';
 
+app.get("/", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Hello from the server!"
+    })
+});
+
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/user", userRouter);
