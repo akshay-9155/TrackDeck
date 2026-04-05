@@ -13,7 +13,12 @@ const useLogin = () => {
         setLoading(true);
         try {
             const response = await axiosInstance.post("/auth/login", { email, password });
-
+            console.log("Login response:", response.data);
+            // Check for verification email message
+            if(response.data.message.toLowerCase().includes("verification")) {
+                toast.error("Please verify your email before logging in. Check your inbox for the verification email.", { duration: 5000 });
+                return { success: false };
+            }
             const { user, accessToken } = response.data.data;
 
             // 🔐 Save access token in memory for Axios
