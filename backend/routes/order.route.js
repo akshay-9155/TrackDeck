@@ -7,7 +7,10 @@ import {
     updateOrder,
     moveToBin,
     getOrderSummary,
-    restoreFromBin
+    restoreFromBin,
+    getBinOrders,
+    emptyBin,
+    deleteOrder
 } from '../controllers/order.controller.js';
 
 import { validateCreateOrder, validateUpdateOrder } from '../middlewares/validations/orderValidation.middleware.js';
@@ -33,6 +36,9 @@ orderRouter.get('/bin', getBinOrders);
 
 // 🗑 Empty bin
 orderRouter.delete('/bin', emptyBin);
+
+// ❌ Permanent delete single order
+orderRouter.delete('/bin/:id', deleteOrder);
 
 // ♻️ Restore from bin
 orderRouter.patch('/:id/restore', restoreFromBin);
