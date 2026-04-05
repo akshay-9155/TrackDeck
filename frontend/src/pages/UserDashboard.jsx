@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Box, Button, Grid, Typography, CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import ViewOrderModal from "../components/modals/ViewOrderModal.jsx";
@@ -19,9 +19,8 @@ import { toggleRefreshOrderSummary } from "../features/orderSlice.jsx";
 
 const UserDashboard = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
   const { orders } = useSelector((state) => state.order);
-  const [filters, setFilters] = useState({});
+  const [filters] = useState({});
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [openCreate, setOpenCreate] = useState(false);
   const [openView, setOpenView] = useState(false);
@@ -115,17 +114,18 @@ const UserDashboard = () => {
           Order Summary
         </Typography>
         <Button
-          variant="outlined"
+          variant="contained"
           onClick={() => setOpenProfile(true)}
           sx={{
-            borderColor: "#a0aec0",
-            color: "#a0aec0",
+            background: "linear-gradient(45deg, #4c51bf, #6b7280)",
+            color: "#ffffff",
             "&:hover": {
-              borderColor: "#e0e7ff",
-              backgroundColor: "rgba(224, 231, 255, 0.1)",
-              color: "#e0e7ff",
+              background: "linear-gradient(45deg, #5a67d8, #9ca3af)",
+              boxShadow: "0 4px 12px rgba(90, 103, 216, 0.4)",
             },
             transition: "all 0.3s ease",
+            padding: "8px 16px",
+            borderRadius: 1,
           }}
         >
           Profile
