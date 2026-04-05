@@ -202,7 +202,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   }
 
   if (!user.isEmailVerified) {
-    throw new ApiError(401, "Please verify your email first");
+    return handleExistingUser(user, res);
   }
 
   // Verify password
