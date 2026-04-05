@@ -15,6 +15,9 @@ const DeleteConfirmDialog = ({
   onConfirm,
   title = "Are you sure?",
   content = "This action cannot be undone.",
+  confirmBtnText = "Delete",
+  confirmBtnLoadingText = "Deleting...",
+  confirmBtnColor = "error",
   loading
 }) => {
   return (
@@ -29,12 +32,12 @@ const DeleteConfirmDialog = ({
         </Button>
         <Button
           onClick={onConfirm}
-          color="error"
+          color={confirmBtnColor}
           variant="contained"
           disabled={loading}
           startIcon={loading && <CircularProgress size={20} />}
         >
-          {loading ? "Deleting..." : "Delete"}
+          {loading ? confirmBtnLoadingText : confirmBtnText}
         </Button>
       </DialogActions>
     </Dialog>
