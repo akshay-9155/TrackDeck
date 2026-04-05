@@ -23,7 +23,7 @@ const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout, loading } = useLogout();
+  const { logout } = useLogout();
 
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -45,6 +45,12 @@ const Navbar = () => {
       label: user.role === "admin" ? "Admin Dashboard" : "User Dashboard",
       path: user.role === "admin" ? "/admin/dashboard" : "/user/dashboard",
     });
+    if (user.role === "user") {
+      navLinks.push({
+        label: "Order Bin",
+        path: "/user/order/bin",
+      });
+    }
   }
 
   return (
@@ -123,7 +129,10 @@ const Navbar = () => {
               // >
               //   <LogoutIcon />
               // </IconButton>
-              <AccountMenu handleLogoutClick={logout} handleChangePasswordClick={() => navigate("/change-password")} />
+              <AccountMenu
+                handleLogoutClick={logout}
+                handleChangePasswordClick={() => navigate("/change-password")}
+              />
             ) : (
               <>
                 <Button

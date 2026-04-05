@@ -19,6 +19,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import VerifyEmail from "../pages/VerifyEmail";
 import VerifyEmailPending from "../pages/VerifyEmailPending";
+import Bin from "../pages/Bin";
 
 const AppRoutes = () => {
   return (
@@ -55,6 +56,7 @@ const AppRoutes = () => {
 
           <Route element={<RequireAuth allowedRoles={["user"]} />}>
             <Route path="/user/dashboard" element={<UserDashboard />} />
+            <Route path="/user/order/bin" element={<Bin />} />
             <Route path="/change-password" element={<ChangePassword />} />
           </Route>
 
