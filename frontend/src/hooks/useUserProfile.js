@@ -15,7 +15,7 @@ const useUserProfile = () => {
         try {
             const res = await axiosInstance.get("/user/profile");
             dispatch(setUserProfile(res?.data?.data));
-        } catch (err) {
+        } catch {
             toast.error("Failed to fetch profile");
         } finally {
             setLoading(false);
@@ -44,7 +44,7 @@ const useUserProfile = () => {
             dispatch(logoutUser())
             toast.success("Account deleted successfully");
             return { success: true };
-        } catch (err) {
+        } catch {
             toast.error("Failed to delete account");
             return { success: false };
         } finally {

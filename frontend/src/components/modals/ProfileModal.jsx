@@ -10,10 +10,6 @@ import {
   Divider,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import DeleteConfirmDialog from "./DeleteConfirmDialog";
-import { useState } from "react";
-import UpdateProfileModal from "./UpdateProfileModal";
-import useUserProfile from "../../hooks/useUserProfile";
 
 const ProfileModal = ({ open, onClose, user, onEditProfile, onDeleteUser }) => {
   // const [openUpdateModal, setOpenUpdateModal] = useState(false);
