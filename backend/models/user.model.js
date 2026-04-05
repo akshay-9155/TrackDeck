@@ -53,6 +53,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 
 }, { timestamps: true });
@@ -92,5 +97,11 @@ UserSchema.methods.generateRefreshToken = function () {
         }
     )
 }
+
+// Do not include deleted users in queries by default
+UserSchema.pre(['find', 'findOne', 'findOneAndUpdate', 'findOneAndDelete'], function (next) {
+    this.where({ isDeleted: false });
+    next();
+});
 
 export const User = mongoose.model("User", UserSchema);

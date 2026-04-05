@@ -5,8 +5,9 @@ import {
     getAllOrders,
     getOrderById,
     updateOrder,
-    deleteOrder,
-    getOrderSummary
+    moveToBin,
+    getOrderSummary,
+    restoreFromBin
 } from '../controllers/order.controller.js';
 
 import { validateCreateOrder, validateUpdateOrder } from '../middlewares/validations/orderValidation.middleware.js';
@@ -21,19 +22,28 @@ orderRouter.use(authenticate);
 // ➕ Create new order
 orderRouter.post('/', validateCreateOrder, createOrder);
 
-// 📋 Get all orders for logged-in user (with optional filters)
+// 📊 Static routes FIRST
+orderRouter.get('/summary/me', getOrderSummary);
+
+// 📋 Get all orders
 orderRouter.get('/', getAllOrders);
 
-// 🔍 Get single order by ID
+// 📋 Get orders in the bin
+orderRouter.get('/bin', getBinOrders);
+
+// 🗑 Empty bin
+orderRouter.delete('/bin', emptyBin);
+
+// ♻️ Restore from bin
+orderRouter.patch('/:id/restore', restoreFromBin);
+
+// 🗑 Move to bin
+orderRouter.delete('/:id', moveToBin);
+
+// 🔍 Get single order
 orderRouter.get('/:id', getOrderById);
 
-// ✏️ Update order (status, review, refund, etc.)
+// ✏️ Update order
 orderRouter.put('/:id', validateUpdateOrder, updateOrder);
-
-// 🗑 Delete an order
-orderRouter.delete('/:id', deleteOrder);
-
-// 📊 Get dashboard stats (total orders, pending, completed etc.)
-orderRouter.get('/summary/me', getOrderSummary);
 
 export default orderRouter;

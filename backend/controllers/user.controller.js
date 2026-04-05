@@ -100,11 +100,11 @@ export const deleteUserAccount = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
-    // Delete all orders of this user
-    await Order.deleteMany({ user: userId });
+    // Mark all related orders as deleted
+    await Order.updateMany({user: userId}, { status: "deleted"});    
 
-    // Delete the user
-    await User.findByIdAndDelete(userId);
+    // Mark user as deleted (soft delete)
+    await User.findByIdAndUpdate(userId, { isDeleted: true });
 
     // Clear refreshToken cookie
     const cookieOptions = {

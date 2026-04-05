@@ -48,3 +48,9 @@ export const createToken = async (userId, type, expiryMinutes) => {
 
   return rawToken; // send this via email
 };
+
+export const getBeforeDate = (daysAgo) => {
+  const date = new Date();
+  date.setDate(date.getDate() - daysAgo);
+  return date;
+}
