@@ -27,7 +27,7 @@ const useGetBinOrders = () => {
         getBinOrders();
     }, []);
 
-    return { loading, error, binOrders };
+    return { loading, error, binOrders, getBinOrders };
 }
 
 export default useGetBinOrders;

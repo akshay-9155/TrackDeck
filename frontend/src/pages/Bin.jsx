@@ -1,5 +1,8 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import useGetBinOrders from "../hooks/useGetBinOrders";
+import useRestoreOrder from "../hooks/useRestoreOrder";
+import useDeleteOrder from "../hooks/useDeleteOrder";
+import useClearBin from "../hooks/useClearBin";
 import {
   Box,
   Button,
@@ -18,19 +21,43 @@ import {
 } from "@mui/material";
 
 const Bin = () => {
-  const { loading, error, binOrders } = useGetBinOrders();
+  const { loading: fetchLoading, error, binOrders, getBinOrders: refetchOrders } = useGetBinOrders();
+  const { restoreOrder, loading: restoreLoading } = useRestoreOrder();
+  const { deleteOrder, loading: deleteLoading } = useDeleteOrder();
+  const { clearBin, loading: clearLoading } = useClearBin();
   const [search, setSearch] = useState("");
+  const [loadingOrderId, setLoadingOrderId] = useState(null);
 
   const handleRestore = async (orderId) => {
-    console.log("Order Restore logic", orderId);
+    setLoadingOrderId(orderId);
+    const result = await restoreOrder(orderId);
+    if (result.success) {
+      refetchOrders();
+    }
+    setLoadingOrderId(null);
   };
 
   const handleDelete = async (orderId) => {
-  const confirm = window.confirm("Are you sure you want to delete this order?");
-  if (!confirm) return;
+    const confirm = window.confirm("Are you sure you want to delete this order? This action cannot be undone.");
+    if (!confirm) return;
 
-  console.log("Delete order logic", orderId);
-};
+    setLoadingOrderId(orderId);
+    const result = await deleteOrder(orderId);
+    if (result.success) {
+      refetchOrders();
+    }
+    setLoadingOrderId(null);
+  };
+
+  const handleClearBin = async () => {
+    const confirm = window.confirm("Are you sure you want to delete all orders in the bin? This action cannot be undone.");
+    if (!confirm) return;
+
+    const result = await clearBin();
+    if (result.success) {
+      refetchOrders();
+    }
+  };
 
   // 🔍 Filtered Data
   const filteredOrders = useMemo(() => {
@@ -49,35 +76,40 @@ const Bin = () => {
 
   // 🔹 Skeleton Loader
   const renderSkeleton = () => (
-    <TableBody>
-      {[...Array(5)].map((_, index) => (
-        <TableRow key={index}>
-          <TableCell>
-            <Skeleton width="80%" />
-          </TableCell>
-          <TableCell>
-            <Skeleton width="60%" />
-          </TableCell>
-          <TableCell align="right">
-            <Skeleton
-              variant="rectangular"
-              width={100}
-              height={36}
-              sx={{ ml: "auto" }}
-            />
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  );
+  <TableBody>
+    {[...Array(5)].map((_, index) => (
+      <TableRow key={index}>
+        <TableCell>
+          <Skeleton width="80%" />
+        </TableCell>
+        <TableCell>
+          <Skeleton width="60%" />
+        </TableCell>
+        <TableCell align="right">
+          <Skeleton
+            variant="rectangular"
+            width={140}
+            height={36}
+            sx={{ ml: "auto" }}
+          />
+        </TableCell>
+      </TableRow>
+    ))}
+  </TableBody>
+);
 
   return (
     <Box sx={{ p: 3 }}>
       <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">Bin Orders</Typography>
-          <Button variant="contained" color="error" onClick={() => console.log("Clear Bin logic")}>
-            Clear Bin
+          <Button 
+            variant="contained" 
+            color="error" 
+            onClick={handleClearBin}
+            disabled={clearLoading || binOrders.length === 0 || fetchLoading}
+          >
+            {clearLoading ? "Clearing..." : "Clear Bin"}
           </Button>
         </Box>
 
@@ -110,7 +142,7 @@ const Bin = () => {
           </TableHead>
 
           {/* 🟡 Loading State */}
-          {loading ? (
+          {fetchLoading ? (
             renderSkeleton()
           ) : (
             <TableBody>
@@ -135,23 +167,25 @@ const Bin = () => {
                       {order.product?.displayName}
                     </TableCell>
                     <TableCell align="right">
-                      <Stack spacing={1} direction={{sx: 'column', md: 'row'}} justifyContent="flex-end"  >
+                      <Stack spacing={1} direction={{xs: 'column', md: 'row'}} justifyContent="flex-end" >
                         <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => handleRestore(order._id)}
-                        sx={{ mb: { xs: 1, md: 0 } }}
-                      >
-                        Restore
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        color="error"
-                        onClick={() => handleDelete(order._id)}
-                      >
-                        Delete
-                      </Button>
+                          variant="contained"
+                          size="small"
+                          onClick={() => handleRestore(order._id)}
+                          disabled={loadingOrderId === order._id || restoreLoading}
+                          sx={{ mb: { xs: 1, md: 0 } }}
+                        >
+                          {loadingOrderId === order._id && restoreLoading ? "Restoring..." : "Restore"}
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          color="error"
+                          onClick={() => handleDelete(order._id)}
+                          disabled={loadingOrderId === order._id || deleteLoading}
+                        >
+                          {loadingOrderId === order._id && deleteLoading ? "Deleting..." : "Delete"}
+                        </Button>
                       </Stack>
                     </TableCell>
                   </TableRow>
