@@ -50,7 +50,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     user: req.user._id,
     status: { $ne: "deleted" },
   });
-  if (existingOrder.status === "bin") {
+  if (existingOrder && existingOrder.status === "bin") {
     throw new ApiError(
       409,
       "An order with this ID is in the bin. Please check your bin or choose a different Order ID.",
