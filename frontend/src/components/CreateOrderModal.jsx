@@ -125,6 +125,7 @@ const CreateOrderModal = ({ open, onClose, refresh }) => {
             <Grid size={{ xs: 12 }}>
               <TextField
                 label="Product Link"
+                type="url"
                 fullWidth
                 {...register("productLink", {
                   required: "Product link is required",

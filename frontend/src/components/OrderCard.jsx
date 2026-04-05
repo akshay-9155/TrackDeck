@@ -174,13 +174,14 @@ const OrderCard = ({ order, onView, onEdit, onDelete }) => {
         </Box>
 
         {/* Action Buttons */}
-        <Stack direction="row" spacing={1.5}>
+        <Stack direction="row" justifyContent="space-between" spacing={1.5}>
           <Button
             variant="outlined"
             color="info"
             size="small"
             onClick={() => onView(order)}
             sx={{
+              flex: 1,
               borderColor: "#93c5fd",
               color: "#93c5fd",
               "&:hover": {
@@ -197,6 +198,7 @@ const OrderCard = ({ order, onView, onEdit, onDelete }) => {
             size="small"
             onClick={() => onEdit(order)}
             sx={{
+              flex: 1,
               borderColor: "#60a5fa",
               color: "#60a5fa",
               "&:hover": {
@@ -213,6 +215,7 @@ const OrderCard = ({ order, onView, onEdit, onDelete }) => {
             size="small"
             onClick={() => onDelete(order)}
             sx={{
+              flex: 1,
               borderColor: "#f87171",
               color: "#f87171",
               "&:hover": {
@@ -221,7 +224,7 @@ const OrderCard = ({ order, onView, onEdit, onDelete }) => {
               },
             }}
           >
-            Delete
+            Bin
           </Button>
         </Stack>
       </CardContent>

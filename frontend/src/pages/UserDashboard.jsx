@@ -14,8 +14,8 @@ import CreateOrderModal from "../components/CreateOrderModal.jsx";
 import UserDashboardSkeleton from "../components/skeleton/UserDashboardSkeleton.jsx";
 import OrderSummarySkeleton from "../components/skeleton/OrderSummarySkeleton.jsx";
 import OrderCardSkeleton from "../components/skeleton/OrderCardSkeleton.jsx";
-import useDeleteOrder from "../hooks/useDeleteOrder.js";
 import { toggleRefreshOrderSummary } from "../features/orderSlice.jsx";
+import useMoveOrderToBin from "../hooks/useMoveOrderToBin.js";
 
 const UserDashboard = () => {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const UserDashboard = () => {
     fetchProfile,
     deleteAccount,
   } = useUserProfile();
-  const { deleteOrder, loading: loadingDeleteOrder } = useDeleteOrder();
+  const { moveToBin, loading: loadingMoveToBin } = useMoveOrderToBin();
 
   return loadingProfile ? (
     <UserDashboardSkeleton />
@@ -344,14 +344,14 @@ const UserDashboard = () => {
         open={openDeleteOrder}
         onClose={() => setOpenDeleteOrder(false)}
         onConfirm={async () => {
-          await deleteOrder(selectedOrder._id);
+          await moveToBin(selectedOrder._id);
           await fetchOrders();
           dispatch(toggleRefreshOrderSummary());
           setOpenDeleteOrder(false);
         }}
-        title="Delete Order"
-        content="Are you sure you want to delete this order? Deleting it will delete all its data."
-        loading={loadingDeleteOrder}
+        title="Move Order to Bin"
+        content="Move this order to bin? It can be restored until permanently deleted and auto-deletes after 30 days."
+        loading={loadingMoveToBin}
       />
     </Box>
   );
