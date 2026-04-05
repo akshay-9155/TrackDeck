@@ -369,7 +369,7 @@ export const getBinOrders = asyncHandler(async (req, res) => {
     user: userId,
     status: "bin",
     binAt: { $gte: getBeforeDate(30) },
-  }).sort({ createdAt: -1 });
+  }).select("_id product.orderId product.displayName").sort({ createdAt: -1 });
 
   return res
     .status(200)
