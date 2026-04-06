@@ -108,7 +108,7 @@ const Footer = () => {
             </Link>
             <Link
               component={RouterLink}
-              to="https://github.com"
+              to="https://github.com/akshay-9155"
               target="_blank"
               rel="noopener"
               underline="hover"
