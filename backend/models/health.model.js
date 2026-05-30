@@ -13,10 +13,6 @@ const HealthSchema = new mongoose.Schema({
     lastVisit: {
         type: Date,
         default: Date.now
-    },
-    visitsAt: {
-        type: [Date],
-        default: []
     }
 
 }, { timestamps: false });

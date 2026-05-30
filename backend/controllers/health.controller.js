@@ -11,8 +11,7 @@ export const healthCheck = asyncHandler(async (req, res) => {
       "GLOBAL_HEALTH_DOC",
       {
         $inc: { visits: 1 },
-        $set: { lastVisit: now },
-        $push: { visitsAt: now },
+        $set: { lastVisit: now }
       },
       {
         new: true,
